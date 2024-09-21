@@ -1,0 +1,41 @@
+#Colores Básicos
+
+ROJO = (255, 0, 0)
+VERDE = (0, 255, 0)
+AZUL = (0, 0, 255)
+AMARILLO = (255, 255, 0)
+CIAN = (0, 255, 255)
+MAGENTA = (255, 0, 255)
+GRIS = (200, 200, 200)
+BLANCO = (255, 255, 255)
+NEGRO = (0, 0, 0)
+AZUL_OSCURO = (50, 50, 150)
+AZUL_CLARO = (173, 216, 230)
+
+#Colores Pastel
+
+PINK = (255, 192, 203)
+LIME = (50, 205, 50)
+PEACH = (255, 218, 185)
+LAVENDER = (230, 230, 250)
+MINT = (189, 252, 201)
+
+#Colores Neutros
+
+GRIS_CLARO = (211, 211, 211)
+GRIS_OSCURO = (169, 169, 169)
+BEIGE = (245, 222, 179)
+CREMA = (255, 253, 208)
+
+#Colores Terrosos
+
+MARRON = (165, 42, 42)
+OLIVA = (128, 128, 0)
+DORADO = (255, 215, 0)
+
+#Colores Vibrantes
+
+NARANJA = (255, 165, 0)
+PURPURA = (128, 0, 128)
+TURQUESA = (64, 224, 208)
+FUCSIA = (255, 0, 255)
