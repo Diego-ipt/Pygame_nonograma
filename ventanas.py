@@ -2,7 +2,7 @@ from elementos_menus import *
 from colores import *
 
 # Cargar fotogramas
-fotogramas = cargar_fotogramas("Proyecto_programacion_nonograma/frames")
+fotogramas = cargar_fotogramas("frames")
 indice_fotograma = 0
 fps_animacion = 10  # Velocidad de cambio de fotogramas
 reloj = pygame.time.Clock()

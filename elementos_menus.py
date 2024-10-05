@@ -16,7 +16,7 @@ pantalla = pygame.display.set_mode((ancho_pantalla, alto_pantalla))
 fuente = pygame.font.SysFont(None, 40)
 
 # Icono
-icono = pygame.image.load("Proyecto_programacion_nonograma/Iconojuego.jpg")
+icono = pygame.image.load("Iconojuego.jpg")
 pygame.display.set_caption("Nonograma_Game")
 pygame.display.set_icon(icono)
 
