@@ -7,23 +7,24 @@ class SettingsManager(Enum):
     DEFAULT_COLOR = (255, 255, 255)
     CLICKED_COLOR = (0, 0, 0)
     BACKGROUND_COLOR = (0, 0, 0)
-    matriz_solucion = [[False, False, False, False, False, False, False, False, False, False],
-                       [False, False, False, False, False, False, False, False, False, False],
-                       [False, False, False, False, False, True, False, False, False, False],
-                       [False, False, False, False, False, False, False, False, False, False],
-                       [False, False, False, False, False, False, False, False, False, False],
-                       [False, False, False, False, False, False, False, False, False, False],
-                       [False, False, False, False, False, False, False, False, False, False],
-                       [False, False, False, False, False, False, False, False, False, False],
-                       [False, False, False, False, False, False, False, False, False, False],
-                       [False, False, False, False, False, False, False, False, False, False]]
+    matriz_solucion = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
 
 class Cell:
     def __init__(self):
-        self.clicked = False
+        self.clicked = 0
 
     def click(self):
-        self.clicked = not self.clicked
+        self.clicked = 1
 
     def get_color(self):
         return SettingsManager.CLICKED_COLOR.value if self.clicked else SettingsManager.DEFAULT_COLOR.value
@@ -45,8 +46,8 @@ class Board:
                 pygame.draw.rect(surface, color, (col * self.cell_size + 1, row * self.cell_size + 1, self.cell_size - 2, self.cell_size - 2))
             
     def get_matrix(self):
-        # Retorna una matriz booleana con True si la celda está clicada y False si no
-        return [[cell.is_clicked() for cell in row] for row in self.board]
+        # Retorna una matriz con 1 si la celda está clicada y 0 si no
+        return [[int(cell.is_clicked()) for cell in row] for row in self.board]
             
     def handle_click(self, pos):
         row = pos[1] // self.cell_size
@@ -55,7 +56,9 @@ class Board:
             self.board[row][col].click()
             # Obtener y mostrar la matriz actualizada en tiempo real (para depuración)
             matrix = self.get_matrix()
-            print(matrix)  # Puedes imprimir la matriz para depuración
+            # Puedes imprimir la matriz para depuración
+            for fila in matrix:
+                print(fila)
             if(matrix == self.matriz_solucion):
                 print("GANASTE")
                 return True
