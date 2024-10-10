@@ -13,12 +13,12 @@ def cambiar_ventana(nuevo_estado):
     print(f"Cambiando a ventana: {nuevo_estado}")
     estado_actual = nuevo_estado
 
-#Bucle principal
-while True:
+# Bucle principal
+running = True
+while running:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+            running = False
 
     # Llamar a la función correspondiente según el estado actual
     if estado_actual == 'menu_principal':
@@ -33,6 +33,10 @@ while True:
         ventana_victoria(cambiar_ventana)
 
     pygame.display.update()
+
+pygame.quit()
+sys.exit()
+
 
 # while True:
 #     for evento in pygame.event.get():
