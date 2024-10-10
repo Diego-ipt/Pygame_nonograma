@@ -1,15 +1,15 @@
 import pygame
+from colores import *
 from enum import Enum
 
 class SettingsManager(Enum):
     GRID_SIZE = 10
-    CELL_SIZE = 30
     DEFAULT_COLOR = (255, 255, 255)
     CLICKED_COLOR = (0, 0, 0)
     BACKGROUND_COLOR = (0, 0, 0)
-    matriz_solucion = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-                   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+    matriz_solucion = [[1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -24,13 +24,13 @@ class Cell:
         self.clicked = 0
 
     def click(self):
-        self.clicked = 1
+        if self.clicked == 1:
+            self.clicked = 0
+        else:
+            self.clicked = 1
 
     def get_color(self):
-        return SettingsManager.CLICKED_COLOR.value if self.clicked else SettingsManager.DEFAULT_COLOR.value
-    
-    def is_clicked(self):
-        return self.clicked
+        return NEGRO if self.clicked==1 else BLANCO
 
 class Board:
     def __init__(self, grid_size, cell_size, matriz_solucion):
@@ -47,11 +47,11 @@ class Board:
             
     def get_matrix(self):
         # Retorna una matriz con 1 si la celda está clicada y 0 si no
-        return [[int(cell.is_clicked()) for cell in row] for row in self.board]
+        return [[int(cell.clicked) for cell in row] for row in self.board]
             
     def handle_click(self, pos):
-        row = pos[1] // self.cell_size
-        col = pos[0] // self.cell_size
+        row = int(pos[1] // self.cell_size)
+        col = int(pos[0] // self.cell_size)
         if 0 <= row < self.grid_size and 0 <= col < self.grid_size:
             self.board[row][col].click()
             # Obtener y mostrar la matriz actualizada en tiempo real (para depuración)
@@ -65,40 +65,65 @@ class Board:
         return False
 
 class Game:
-    def __init__(self, grid_size=SettingsManager.GRID_SIZE.value, cell_size=SettingsManager.CELL_SIZE.value, matriz_solucion=SettingsManager.matriz_solucion.value):
+    def __init__(self, grid_size=SettingsManager.GRID_SIZE.value, window_size=300, matriz_solucion=SettingsManager.matriz_solucion.value):
         pygame.init()
-        self.window_size = grid_size * cell_size
-        self.window = pygame.display.set_mode((self.window_size, self.window_size))
+        self.cell_size = window_size / grid_size
+        self.grid_size = grid_size
+        self.window_size = window_size
+        self.surface = pygame.Surface((self.window_size, self.window_size))
         self.clock = pygame.time.Clock()
-        self.board = Board(grid_size, cell_size, matriz_solucion)
+        self.board = Board(grid_size, self.cell_size, matriz_solucion)
         self.running = True
         self.font = pygame.font.Font(None, 74)
         self.won = False
 
-    def handle_events(self):
+    def handle_events(self, offset):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if self.board.handle_click(event.pos):
-                    self.won = True
+                pos = (event.pos[0] - offset[0], event.pos[1] - offset[1])
+                if 0 <= pos[0] < self.window_size and 0 <= pos[1] < self.window_size:
+                    if self.board.handle_click(pos):
+                        self.won = True
 
     def draw_text(self, text, position):
         text_surface = self.font.render(text, True, (255, 0, 0))
-        self.window.blit(text_surface, position)
+        self.surface.blit(text_surface, position)
 
-    def run(self):
+    def run(self, main_window, x, y):
         while self.running:
             self.clock.tick(120)
-            self.handle_events()
-            self.window.fill(SettingsManager.BACKGROUND_COLOR.value)
-            self.board.draw(self.window)
+            self.handle_events((x, y))
+            self.surface.fill(GRIS)
+            self.board.draw(self.surface)
             if self.won:
-                self.draw_text("GANASTE", (self.window_size // 4, self.window_size // 2))
+                return True
+            main_window.blit(self.surface, (x, y))
             pygame.display.flip()
-        pygame.quit()
+        return False
 
-# Ejecución del juego
-if __name__ == "__main__":
+def main():
+    pygame.init()
+    main_window_size = (600, 600)
+    main_window = pygame.display.set_mode(main_window_size)
+    pygame.display.set_caption("Main Window")
+    clock = pygame.time.Clock()
     game = Game()
-    game.run()
+    game_position = (150, 150)  # Position of the game within the main window
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        main_window.fill((200, 200, 200))  # Fill the main window with a background color
+        game.run(main_window, *game_position)
+        pygame.display.flip()
+        clock.tick(60)
+
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()

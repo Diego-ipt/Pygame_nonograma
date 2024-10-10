@@ -1,6 +1,6 @@
 import sys
 import pygame
-from ventanas import menu_principal, ventana_elegir_partida, ventana_crear_nonograma
+from ventanas import *
 
 # Inicializar Pygame
 pygame.init()
@@ -13,7 +13,7 @@ def cambiar_ventana(nuevo_estado):
     print(f"Cambiando a ventana: {nuevo_estado}")
     estado_actual = nuevo_estado
 
-# Bucle principal
+#Bucle principal
 while True:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
@@ -27,5 +27,19 @@ while True:
         ventana_elegir_partida(cambiar_ventana)
     elif estado_actual == 'crear_nonograma':
         ventana_crear_nonograma(cambiar_ventana)
+    elif estado_actual == 'ventana_nonograma_game':
+        ventana_nonograma_game(cambiar_ventana)
+    elif estado_actual == 'ventana_victoria':
+        ventana_victoria(cambiar_ventana)
 
     pygame.display.update()
+
+# while True:
+#     for evento in pygame.event.get():
+#         if evento.type == pygame.QUIT:
+#             pygame.quit()
+#             sys.exit()
+
+#     ventana_nonograma_game(cambiar_ventana)
+
+#     pygame.display.update()
