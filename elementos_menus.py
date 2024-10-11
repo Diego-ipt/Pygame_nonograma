@@ -29,6 +29,23 @@ def cargar_fotogramas(directorio):
             fotogramas.append(img)
     return fotogramas
 
+def cargar_fotogramas_gif(directorio):
+    fotogramas = []
+    for archivo in sorted(os.listdir(directorio)):
+        if archivo.endswith('.gif'):
+            img = pygame.image.load(os.path.join(directorio, archivo))
+            fotogramas.append(img)
+    return fotogramas
+
+def mostrar_fotogramas(fotogramas, indice_fotograma, x, y, pantalla):
+    if len(fotogramas) > 0:
+        pantalla.blit(fotogramas[indice_fotograma], (x, y))
+        indice_fotograma = (indice_fotograma + 1) % len(fotogramas)
+        return indice_fotograma
+    else:
+        print("Error: No se han cargado los fotogramas")
+        return indice_fotograma
+
 # Función para mostrar texto en la pantalla
 def mostrar_texto(texto, fuente, color, pantalla, x, y):
     superficie_texto = fuente.render(texto, True, color)
@@ -36,20 +53,23 @@ def mostrar_texto(texto, fuente, color, pantalla, x, y):
     pantalla.blit(superficie_texto, rect_texto)
 
 # Función para los botones
-def boton(texto, x, y, ancho, alto, color_claro, color_oscuro, pantalla, accion=None):
+def boton(texto, x, y, ancho, alto, color_base, color_presionado, pantalla, accion=None, color_text=NEGRO):
     raton = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
 
     if x + ancho > raton[0] > x and y + alto > raton[1] > y:
-        pygame.draw.rect(pantalla, color_oscuro, (x, y, ancho, alto))
+        if color_presionado != NOTHING:
+            pygame.draw.rect(pantalla, color_presionado, (x, y, ancho, alto))
+
         if click[0] == 1 and accion is not None:
             accion()
     else:
-        pygame.draw.rect(pantalla, color_claro, (x, y, ancho, alto))
+        if color_base != NOTHING:
+            pygame.draw.rect(pantalla, color_base, (x, y, ancho, alto))
 
-    mostrar_texto(texto, fuente, NEGRO, pantalla, x + (ancho // 2), y + (alto // 2))
+    mostrar_texto(texto, fuente, color_text, pantalla, x + (ancho // 2), y + (alto // 2))
 
-# Función para dibujar una cuadrícula
+# Función para dibujar una cuadrícula menu
 def dibujar_grid(pantalla, filas, columnas, tamano_celda, color_activo, color_inactivo, grid_estado):
     for fila in range(filas):
         for columna in range(columnas):
@@ -63,3 +83,4 @@ def actualizar_grid(grid_estado, probabilidad_cambio=0.1):
         for columna in range(len(grid_estado[0])):
             if random.random() < probabilidad_cambio:
                 grid_estado[fila][columna] = not grid_estado[fila][columna]
+
