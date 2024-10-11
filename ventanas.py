@@ -4,40 +4,42 @@ from ventana_nonograma import *
 from nonograma_numeros import *
 
 # Cargar fotogramas
-fotogramas = cargar_fotogramas("frames")
-indice_fotograma = 0
-fps_animacion = 10  # Velocidad de cambio de fotogramas
+snake = cargar_fotogramas("gif_frames/serpiente")
+menu = cargar_fotogramas_gif("gif_frames/menu")
+trophy = cargar_fotogramas_gif("gif_frames/trofeo_win")
+indice_fotograma_snake = 0
+indice_fotograma_menu = 0
+indice_fotograma_trophy = 0
 reloj = pygame.time.Clock()
 
-# Configuramos la cuadrícula
-filas = 20
-columnas = 20
-tamano_celda = 40
-grid_estado = [[False for _ in range(columnas)] for _ in range(filas)]
 
+
+
+grid_estado= [[False for _ in range(50)] for _ in range(50)]
 def menu_principal(cambiar_ventana):
-    global indice_fotograma
-
+    global indice_fotograma_snake
+    global indice_fotograma_menu
     # Actualizar el estado de la cuadrícula
     actualizar_grid(grid_estado)
 
     # Dibuja el fondo con la cuadrícula
     pantalla.fill(BLANCO)
-    dibujar_grid(pantalla, filas, columnas, tamano_celda, NEGRO, BLANCO, grid_estado)
+    dibujar_grid(pantalla, 50, 50, 16, NEGRO, BLANCO_MENU, grid_estado)
 
-    mostrar_texto("Menú Principal", fuente, NEGRO, pantalla, 400, 100)
-    boton("Elegir Partida", 270, 200, 260, 60, GRIS, AZUL_OSCURO, pantalla, lambda: cambiar_ventana('elegir_partida'))
-    boton("Crear Nonograma", 270, 300, 260, 60, GRIS, AZUL_OSCURO, pantalla, lambda: cambiar_ventana('crear_nonograma'))
+    indice_fotograma_menu=mostrar_fotogramas(menu, indice_fotograma_menu, 75, 0,pantalla)
+
+    boton("Elegir Partida", 270, 350, 260, 60, VIOLETA_MENU, FUCSIA, pantalla, lambda: cambiar_ventana('elegir_partida'))
+    boton("Crear Nonograma", 270, 450, 260, 60, VIOLETA_MENU, FUCSIA, pantalla, lambda: cambiar_ventana('crear_nonograma'))
 
     # Animación de fotogramas si están disponibles
-    if len(fotogramas) > 0:
-        pantalla.blit(fotogramas[indice_fotograma], (-50, 100))
-        pantalla.blit(fotogramas[indice_fotograma], (500, 100))
-        indice_fotograma = (indice_fotograma + 1) % len(fotogramas)
-    else:
-        print("Error: No se han cargado los fotogramas")
+    # if len(snake) > 0:
+    #     pantalla.blit(snake[indice_fotograma_snake], (-50, 100))
+    #     pantalla.blit(snake[indice_fotograma_snake], (500, 100))
+    #     indice_fotograma_snake = (indice_fotograma_snake + 1) % len(snake)
+    # else:
+    #     print("Error: No se han cargado los fotogramas")
 
-    reloj.tick(fps_animacion)
+    reloj.tick(10)
 
 def ventana_elegir_partida(cambiar_ventana):
     pantalla.fill(GRIS)
@@ -56,10 +58,11 @@ def ventana_nonograma_game(cambiar_ventana):
     clock = pygame.time.Clock()
     game = Game()
     filas, columnas = procesar_matriz(game.board.matriz_solucion)
-    game_position = (150, 150)  # Position of the game within the main window
-    pantalla.fill(ROJO)  # Fill the main window with a background color
-    # Calcular las posiciones de los números de las filas y columnas
-    tamano_celda = 30  # Tamaño de cada celda del tablero
+    game_position = (150, 150)  
+    pantalla.fill(ROJO)  
+    
+
+    tamano_celda = 30  
     offset_x = game_position[0]
     offset_y = game_position[1]
     # Dibujar los números de las filas
@@ -80,6 +83,11 @@ def ventana_nonograma_game(cambiar_ventana):
         clock.tick(60)
 
 def ventana_victoria(cambiar_ventana):
-    pantalla.fill(GRIS)
+    global indice_fotograma_trophy
+
+    pantalla.fill(VIOLETA_MENU)
+    indice_fotograma_trophy=mostrar_fotogramas(trophy, indice_fotograma_trophy, 170, 100,pantalla)
     mostrar_texto("¡Ganaste!", fuente, NEGRO, pantalla, 400, 100)
-    boton("Volver al menú", 300, 400, 200, 60, GRIS, AZUL_OSCURO, pantalla, lambda: cambiar_ventana('menu_principal'))
+    boton("Volver al menú", 310, 400, 200, 60, NOTHING, FUCSIA, pantalla, lambda: cambiar_ventana('menu_principal'))
+
+    reloj.tick(30)

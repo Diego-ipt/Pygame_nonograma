@@ -31,16 +31,16 @@ def procesar_matriz(matriz):
 
     return filas_resultado, columnas_resultado
 
-# Ejemplo
-matriz=[[1, 0, 1, 1, 0],
-        [0, 1, 0, 0, 1],
-        [1, 1, 1, 0, 0],
-        [0, 0, 1, 1, 1],
-        [1, 0, 0, 1, 0]]
+# # Ejemplo
+# matriz=[[1, 0, 1, 1, 0],
+#         [0, 1, 0, 0, 1],
+#         [1, 1, 1, 0, 0],
+#         [0, 0, 1, 1, 1],
+#         [1, 0, 0, 1, 0]]
 
 
 
-filas, columnas = procesar_matriz(matriz)
-print("Filas:", filas)
-print("Columnas:", columnas)
+# filas, columnas = procesar_matriz(matriz)
+# print("Filas:", filas)
+# print("Columnas:", columnas)
 
