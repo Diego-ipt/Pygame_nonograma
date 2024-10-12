@@ -1,11 +1,14 @@
 import pygame
 import os
 import random
-from colores import *
+from NonogramaCore.colores import *
+from NonogramaCore.AssetManager import AssetManager
 
 # Inicializar Pygame
 pygame.init()
 
+# Cargador de recursos
+asset_manager = AssetManager()
 
 # Tamaño de la pantalla
 ancho_pantalla = 800
@@ -16,26 +19,9 @@ pantalla = pygame.display.set_mode((ancho_pantalla, alto_pantalla))
 fuente = pygame.font.SysFont(None, 40)
 
 # Icono
-icono = pygame.image.load("Iconojuego.jpg")
+icono = asset_manager.cargar_imagen("Iconojuego.jpg")
 pygame.display.set_caption("Nonograma_Game")
 pygame.display.set_icon(icono)
-
-# Cargar los fotogramas del GIF
-def cargar_fotogramas(directorio):
-    fotogramas = []
-    for archivo in sorted(os.listdir(directorio)):
-        if archivo.endswith('.png'):
-            img = pygame.image.load(os.path.join(directorio, archivo))
-            fotogramas.append(img)
-    return fotogramas
-
-def cargar_fotogramas_gif(directorio):
-    fotogramas = []
-    for archivo in sorted(os.listdir(directorio)):
-        if archivo.endswith('.gif'):
-            img = pygame.image.load(os.path.join(directorio, archivo))
-            fotogramas.append(img)
-    return fotogramas
 
 def mostrar_fotogramas(fotogramas, indice_fotograma, x, y, pantalla):
     if len(fotogramas) > 0:
