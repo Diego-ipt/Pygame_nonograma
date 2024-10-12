@@ -1,5 +1,5 @@
 import pygame
-from NonogramaCore.colores import *
+from nonograma_core.colores import *
 from enum import Enum
 #default
 class SettingsManager(Enum):

@@ -1,6 +1,6 @@
 import sys
 import pygame
-from NonogramaCore.ventanas import *
+from nonograma_core.ventanas import *
 
 # Inicializar Pygame
 pygame.init()

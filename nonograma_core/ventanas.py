@@ -1,8 +1,8 @@
-from NonogramaCore.elementos_menus import *
-from NonogramaCore.colores import *
-from NonogramaCore.ventana_nonograma import *
-from NonogramaCore.nonograma_numeros import *
-from NonogramaCore.AssetManager import AssetManager
+from nonograma_core.elementos_menus import *
+from nonograma_core.colores import *
+from nonograma_core.ventana_nonograma import *
+from nonograma_core.nonograma_numeros import *
+from nonograma_core.AssetManager import AssetManager
 
 
 # Cargador de recursos
