@@ -1,20 +1,21 @@
-from elementos_menus import *
-from colores import *
-from ventana_nonograma import *
-from nonograma_numeros import *
+from nonograma_core.elementos_menus import *
+from nonograma_core.colores import *
+from nonograma_core.ventana_nonograma import *
+from nonograma_core.nonograma_numeros import *
+from nonograma_core.AssetManager import AssetManager
+
+
+# Cargador de recursos
+asset_manager = AssetManager()
 
 # Cargar fotogramas
-snake = cargar_fotogramas("gif_frames/serpiente")
-menu = cargar_fotogramas_gif("gif_frames/menu")
-trophy = cargar_fotogramas_gif("gif_frames/trofeo_win")
+snake = asset_manager.cargar_fotogramas("serpiente")
+menu = asset_manager.cargar_fotogramas("menu")
+trophy = asset_manager.cargar_fotogramas("trofeo_win")
 indice_fotograma_snake = 0
 indice_fotograma_menu = 0
 indice_fotograma_trophy = 0
 reloj = pygame.time.Clock()
-
-
-
-
 grid_estado= [[False for _ in range(50)] for _ in range(50)]
 def menu_principal(cambiar_ventana):
     global indice_fotograma_snake
