@@ -12,7 +12,7 @@ asset_manager = AssetManager()
 
 # Tamaño de la pantalla
 ancho_pantalla = 800
-alto_pantalla = 600
+alto_pantalla = 650
 pantalla = pygame.display.set_mode((ancho_pantalla, alto_pantalla))
 
 # Definir fuente de texto
