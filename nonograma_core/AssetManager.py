@@ -45,5 +45,5 @@ class AssetManager:
     def get_sound(self, name):
         return self.sounds.get(name)
 
-    def get_animation(self, name):
-        return self.animations.get(name)
+    def get_gif(self, name):
+        return self.gifs.get(name)
