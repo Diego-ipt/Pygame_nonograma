@@ -79,13 +79,13 @@ def ventana_nonograma_game(cambiar_ventana):
     pantalla.fill(ROJO)
     pygame.display.set_caption("Nonograma Game")
     mostrar_texto("Nivel X", fuente, NEGRO, pantalla, 80, 50)
-    boton("Volver al menú", 500, 500, 200, 60, GRIS, AZUL_OSCURO, pantalla, lambda: cambiar_ventana('menu_principal'))
+    
     clock = pygame.time.Clock()
     game = Game()
     filas, columnas = procesar_matriz(game.board.matriz_solucion)
     game_position = (80, 120)
 
-    tamano_celda = 30
+    tamano_celda = game.getCellSize()
     offset_x = game_position[0]
     offset_y = game_position[1]
 
@@ -98,12 +98,28 @@ def ventana_nonograma_game(cambiar_ventana):
 
     running = True
 
-    # def set_running_false():
-    #     nonlocal running
-    #     running = False
-
     while running:
-        if game.run(pantalla, *game_position):
+        events = pygame.event.get()
+
+        for event in events:
+            # detectar clics en botones
+            # si se cambian los botones de posicion, hay q ajustar esto
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                raton = pygame.mouse.get_pos()
+                if 500 <= raton[0] <= 700 and 100 <= raton[1] <= 160:
+                    cambiar_ventana('menu_principal')  
+                    running = False
+                elif 500 <= raton[0] <= 700 and 220 <= raton[1] <= 280:
+                    game.deshacer() 
+                elif 500 <= raton[0] <= 700 and 340 <= raton[1] <= 400:
+                    game.rehacer()
+
+
+        boton("Volver al menú", 500, 100, 200, 60, GRIS, AZUL_OSCURO, pantalla)
+        boton("Deshacer", 500, 220, 200, 60, GRIS, AZUL_OSCURO, pantalla)
+        boton("Rehacer", 500, 340, 200, 60, GRIS, AZUL_OSCURO, pantalla)
+
+        if game.run(pantalla, *game_position, events=events):
             running = False
             cambiar_ventana('ventana_victoria')
 

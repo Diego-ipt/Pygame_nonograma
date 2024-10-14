@@ -1,5 +1,6 @@
 import pygame
 from nonograma_core.colores import *
+from nonograma_core.queueYStack import *
 from enum import Enum
 #default
 class SettingsManager(Enum):
@@ -76,9 +77,11 @@ class Game:
         self.running = True
         self.font = pygame.font.Font(None, 74)
         self.won = False
+        self.stack = Stack()
+        self.stack_redo = Stack()
 
-    def handle_events(self, offset):
-        for event in pygame.event.get():
+    def handle_events(self, events, offset):
+        for event in events:
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -86,22 +89,35 @@ class Game:
                 if 0 <= pos[0] < self.window_size and 0 <= pos[1] < self.window_size:
                     if self.board.handle_click(pos):
                         self.won = True
+                    self.stack.push(pos)
 
     def draw_text(self, text, position):
         text_surface = self.font.render(text, True, (255, 0, 0))
         self.surface.blit(text_surface, position)
 
-    def run(self, main_window, x, y):
-        while self.running:
-            self.clock.tick(120)
-            self.handle_events((x, y))
-            self.surface.fill(GRIS)
-            self.board.draw(self.surface)
-            if self.won:
-                return True
-            main_window.blit(self.surface, (x, y))
-            pygame.display.flip()
+    def run(self, main_window, x, y, events):
+        self.handle_events(events, (x, y))
+        self.surface.fill(GRIS)
+        self.board.draw(self.surface)
+        if self.won:
+            return True
+        main_window.blit(self.surface, (x, y))
         return False
+    
+    def getCellSize(self):
+        return self.cell_size
+    
+    def deshacer(self):
+        if(self.stack.size() > 0):
+            pos_aux = self.stack.pop()
+            self.stack_redo.push(pos_aux)
+            self.board.handle_click(pos_aux)
+
+    def rehacer(self):
+        if(self.stack_redo.size() > 0):
+            pos_aux = self.stack_redo.pop()
+            self.stack.push(pos_aux)
+            self.board.handle_click(pos_aux)
 
 # def main():
 #     pygame.init()
