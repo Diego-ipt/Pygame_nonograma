@@ -50,6 +50,7 @@ class SizeButton:
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.action = action
+        self.font = pygame.font.Font(None, 32)
 
     def draw(self, surface):
         pygame.draw.rect(surface, SettingsManager.BUTTON_COLOR.value, self.rect)
@@ -90,7 +91,13 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                self.board.handle_click(event.pos)
+                pos = event.pos
+                if pos[0] < self.grid_size * self.cell_size:
+                    self.board.handle_click(event.pos)
+                else:
+                    for button in self.size_buttons:
+                        if button.isClicked(pos):
+                            button.action()
 
     def run(self):
         while self.running:
@@ -98,6 +105,8 @@ class Game:
             self.handle_events()
             self.window.fill(SettingsManager.BACKGROUND_COLOR.value)
             self.board.draw(self.window)
+            for button in self.size_buttons:
+                button.draw(self.window)
             pygame.display.flip()
         pygame.quit()
 
