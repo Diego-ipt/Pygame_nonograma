@@ -13,6 +13,11 @@ def test_clickBoton():
     assert button.isClicked((50,50)) == True
     assert button.isClicked((150,150)) == False
 
+def test_boardResize():
+    board = CreatorBoard(7,30 )
+    board.resize(10)
+    assert board.grid_size == 10
+
 def test_decreaseGrid():
     game = Game()
     game.decreaseGrid()

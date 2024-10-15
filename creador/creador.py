@@ -71,6 +71,19 @@ class Game:
         self.clock = pygame.time.Clock()
         self.board = CreatorBoard(grid_size, cell_size)
         self.running = True
+        self.size_buttons = [SizeButton(self.windows_width - 100, 50, 50, 50, '+', self.increaseGrid),
+                             SizeButton(self.windows_width - 100, 150, 50, 50, '-', self.decreaseGrid)
+        ]
+
+    def increaseGrid(self):
+        if self.grid_size < SettingsManager.MAX_GRID_SIZE.value:
+            self.grid_size += 1
+            self.board.resize(self.grid_size)
+
+    def decreaseGrid(self):
+        if self.grid_size > SettingsManager.MIN_GRID_SIZE.value:
+            self.grid_size -= 1
+            self.board.resize(self.grid_size)
 
     def handle_events(self):
         for event in pygame.event.get():
