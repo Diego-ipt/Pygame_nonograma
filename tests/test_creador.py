@@ -8,6 +8,7 @@ def test_claseBoton():
     assert button.text == "Test"
     assert button.action == None
 
+
 def test_clickBoton():
     button = SizeButton(0,0,100,100,"Test",None)
     assert button.isClicked((50,50)) == True
@@ -19,12 +20,12 @@ def test_boardResize():
     assert board.grid_size == 10
 
 def test_decreaseGrid():
-    game = Game()
+    game = CreatorWindow()
     game.decreaseGrid()
     assert game.grid_size == 9
 
 def test_increaseGrid():
-    game = Game()
+    game = CreatorWindow()
     game.decreaseGrid()
     game.increaseGrid()
     assert  game.grid_size == 10
