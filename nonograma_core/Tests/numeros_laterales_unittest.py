@@ -1,5 +1,5 @@
 import unittest
-from nonograma_numeros import procesar_matriz
+from nonograma_core.Logica.nonograma_numeros import procesar_matriz
 
 # test_nonograma_numeros.py
 

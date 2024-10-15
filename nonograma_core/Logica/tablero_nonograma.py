@@ -1,6 +1,6 @@
 import pygame
-from nonograma_core.colores import *
-from nonograma_core.queueYStack import *
+from nonograma_core.Elementos_graficos.colores import *
+from nonograma_core.Logica.queueYStack import *
 from enum import Enum
 #default
 class SettingsManager(Enum):

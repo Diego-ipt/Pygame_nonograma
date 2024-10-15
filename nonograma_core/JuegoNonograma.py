@@ -1,12 +1,12 @@
 import sys
 import pygame
 
-from nonograma_core.VentanaMenuPrincipal import *
-from nonograma_core.VentanaElegirPartida import *
-from nonograma_core.VentanaCrearNonograma import *
-from nonograma_core.VentanaNonogramaGame import *
-from nonograma_core.VentanaVictoria import *
-from nonograma_core.AssetManager import *
+from nonograma_core.Ventanas.VentanaMenuPrincipal import *
+from nonograma_core.Ventanas.VentanaElegirPartida import *
+from nonograma_core.Ventanas.VentanaCrearNonograma import *
+from nonograma_core.Ventanas.VentanaNonogramaGame import *
+from nonograma_core.Ventanas.VentanaVictoria import *
+from nonograma_core.Elementos_graficos.AssetManager import *
 
 
 

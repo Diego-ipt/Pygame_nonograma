@@ -1,9 +1,9 @@
-from nonograma_core.elementos_menus import *
-from nonograma_core.colores import *
-from nonograma_core.ventana_nonograma import *
-from nonograma_core.nonograma_numeros import *
-from nonograma_core.VentanaBase import *
-from nonograma_core.AssetManager import *
+from nonograma_core.Elementos_graficos.elementos_menus import *
+from nonograma_core.Elementos_graficos.colores import *
+from nonograma_core.Logica.tablero_nonograma import *
+from nonograma_core.Logica.nonograma_numeros import *
+from nonograma_core.Ventanas.VentanaBase import *
+from nonograma_core.Elementos_graficos.AssetManager import *
 
 class VentanaVictoria(VentanaBase):
     def __init__(self, pantalla, cambiar_ventana):

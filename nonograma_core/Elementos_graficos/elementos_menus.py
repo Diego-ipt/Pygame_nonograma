@@ -1,8 +1,8 @@
 import pygame
 import os
 import random
-from nonograma_core.colores import *
-from nonograma_core.AssetManager import AssetManager
+from nonograma_core.Elementos_graficos.colores import *
+from nonograma_core.Elementos_graficos.AssetManager import AssetManager
 
 # Inicializar Pygame
 pygame.init()

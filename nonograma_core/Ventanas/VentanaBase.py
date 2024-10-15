@@ -1,6 +1,6 @@
 import sys
 import pygame
-from nonograma_core.AssetManager import *
+from nonograma_core.Elementos_graficos.AssetManager import *
 
 class VentanaBase:
     def __init__(self, pantalla, cambiar_ventana):
