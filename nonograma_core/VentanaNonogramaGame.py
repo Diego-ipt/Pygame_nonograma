@@ -1,4 +1,5 @@
 import pygame
+import time
 from nonograma_core.elementos_menus import *
 from nonograma_core.colores import *
 from nonograma_core.ventana_nonograma import *
@@ -15,8 +16,7 @@ class VentanaNonogramaGame(VentanaBase):
 
     # En el bucle principal del juego
     def dibujar(self):
-        self.reloj.tick(10)
-        pygame.init()
+        time.sleep(0.1)  # Agregar un delay de 1 segundo
         pantalla.fill(ROJO)
         pygame.display.set_caption("Nonograma Game")
         mostrar_texto("Nivel X", fuente, NEGRO, pantalla, 80, 50)

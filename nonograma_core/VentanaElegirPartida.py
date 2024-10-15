@@ -17,4 +17,5 @@ class VentanaElegirPartida(VentanaBase):
         self.pantalla.fill(GRIS)
         mostrar_texto("Elegir Partida", fuente, NEGRO, self.pantalla, 400, 100)
         boton("Volver al menú", 300, 400, 200, 60, GRIS, AZUL_OSCURO, self.pantalla, lambda: self.cambiar_ventana('menu_principal'))
-        boton("Jugar", 300, 500, 200, 60, GRIS, AZUL_OSCURO, self.pantalla, lambda: self.iniciar_juego(Game()))
+        #Game() se debe reemplazar por el nongrama a jugar elegido en esta ventana
+        boton("Jugar", 300, 500, 200, 60, GRIS, AZUL_OSCURO, self.pantalla, lambda: self.iniciar_juego(Game())) 
