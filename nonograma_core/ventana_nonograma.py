@@ -80,6 +80,10 @@ class Game:
         self.stack = Stack()
         self.stack_redo = Stack()
 
+    def draw_text(self, text, position):
+        text_surface = self.font.render(text, True, (255, 0, 0))
+        self.surface.blit(text_surface, position)
+
     def handle_events(self, events, offset):
         for event in events:
             if event.type == pygame.QUIT:
@@ -90,10 +94,6 @@ class Game:
                     if self.board.handle_click(pos):
                         self.won = True
                     self.stack.push(pos)
-
-    def draw_text(self, text, position):
-        text_surface = self.font.render(text, True, (255, 0, 0))
-        self.surface.blit(text_surface, position)
 
     def run(self, main_window, x, y, events):
         self.handle_events(events, (x, y))
