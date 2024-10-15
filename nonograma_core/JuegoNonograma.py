@@ -22,6 +22,8 @@ class JuegoNonograma:
         pygame.display.set_icon(icono)
         # Inicializa la ventana actual
         self.cambiar_ventana('menu_principal')
+        # Inicializa juego en especifico
+        self.game = Game()
 
     def cambiar_ventana(self, nuevo_estado):
         print(f"Cambiando a ventana: {nuevo_estado}")

@@ -96,7 +96,8 @@ class Game:
                     self.stack.push(pos)
 
     def run(self, main_window, x, y, events):
-        self.handle_events(events, (x, y))
+        if self.running == True:
+            self.handle_events(events, (x, y))
         self.surface.fill(GRIS)
         self.board.draw(self.surface)
         if self.won:
