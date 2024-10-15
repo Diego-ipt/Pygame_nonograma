@@ -1,9 +1,14 @@
 import unittest
-from nonograma_core.Logica.nonograma_numeros import procesar_matriz
+import sys
+import os
+
+# Add the directory containing nonograma_core to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'Logica')))
+
+from nonograma_numeros import procesar_matriz
+
 
 # test_nonograma_numeros.py
-
-
 class TestProcesarMatriz(unittest.TestCase):
     
     def test_matriz_todos_ceros(self):
