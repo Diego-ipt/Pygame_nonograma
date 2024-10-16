@@ -1,10 +1,10 @@
 import sys
 import pygame
-from nonograma_core.elementos_menus import *
-from nonograma_core.colores import *
-from nonograma_core.ventana_nonograma import *
-from nonograma_core.nonograma_numeros import *
-from nonograma_core.AssetManager import AssetManager
+from nonograma_core.Elementos_graficos.elementos_menus import *
+from nonograma_core.Elementos_graficos.colores import *
+from nonograma_core.Logica.tablero_nonograma import *
+from nonograma_core.Logica.nonograma_numeros import *
+from nonograma_core.Elementos_graficos.AssetManager import AssetManager
 
 # Cargador de recursos
 asset_manager = AssetManager()

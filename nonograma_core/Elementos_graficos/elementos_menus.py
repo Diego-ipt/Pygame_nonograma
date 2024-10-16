@@ -1,8 +1,8 @@
 import pygame
-import os
+import time
 import random
-from nonograma_core.colores import *
-from nonograma_core.AssetManager import AssetManager
+from nonograma_core.Elementos_graficos.colores import *
+from nonograma_core.Elementos_graficos.AssetManager import AssetManager
 
 # Inicializar Pygame
 pygame.init()
@@ -38,20 +38,28 @@ def mostrar_texto(texto, fuente, color, pantalla, x, y):
     rect_texto = superficie_texto.get_rect(center=(x, y))
     pantalla.blit(superficie_texto, rect_texto)
 
+# Variable global para controlar el estado del clic
+accion_ejecutada = False
+
 # Función para los botones
 def boton(texto, x, y, ancho, alto, color_base, color_presionado, pantalla, accion=None, color_text=NEGRO):
+    global accion_ejecutada
     raton = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
 
     if x + ancho > raton[0] > x and y + alto > raton[1] > y:
         if color_presionado != NOTHING:
             pygame.draw.rect(pantalla, color_presionado, (x, y, ancho, alto))
-
-        if click[0] == 1 and accion is not None:
+        if click[0] == 1 and accion is not None and not accion_ejecutada:
             accion()
+            accion_ejecutada = True
     else:
         if color_base != NOTHING:
             pygame.draw.rect(pantalla, color_base, (x, y, ancho, alto))
+
+    # Resetea la acción cuando se suelta el botón del ratón
+    if click[0] == 0:
+        accion_ejecutada = False
 
     mostrar_texto(texto, fuente, color_text, pantalla, x + (ancho // 2), y + (alto // 2))
 

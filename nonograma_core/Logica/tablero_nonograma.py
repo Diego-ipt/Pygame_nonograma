@@ -1,6 +1,6 @@
 import pygame
-from nonograma_core.colores import *
-from nonograma_core.queueYStack import *
+from nonograma_core.Elementos_graficos.colores import *
+from nonograma_core.Logica.queueYStack import *
 from enum import Enum
 #default
 class SettingsManager(Enum):
@@ -80,6 +80,10 @@ class Game:
         self.stack = Stack()
         self.stack_redo = Stack()
 
+    def draw_text(self, text, position):
+        text_surface = self.font.render(text, True, (255, 0, 0))
+        self.surface.blit(text_surface, position)
+
     def handle_events(self, events, offset):
         for event in events:
             if event.type == pygame.QUIT:
@@ -91,12 +95,9 @@ class Game:
                         self.won = True
                     self.stack.push(pos)
 
-    def draw_text(self, text, position):
-        text_surface = self.font.render(text, True, (255, 0, 0))
-        self.surface.blit(text_surface, position)
-
     def run(self, main_window, x, y, events):
-        self.handle_events(events, (x, y))
+        if self.running == True:
+            self.handle_events(events, (x, y))
         self.surface.fill(GRIS)
         self.board.draw(self.surface)
         if self.won:
