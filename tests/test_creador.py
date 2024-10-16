@@ -10,7 +10,7 @@ def test_claseBoton():
 
 
 def test_clickBoton():
-    button = SizeSaveButton(0, 0, 100, 100, "Test", None)
+    button = SizeSaveButton(0, 0, 100, 100, "Test", None, True)
     assert button.isClicked((50,50)) == True
     assert button.isClicked((150,150)) == False
 
@@ -47,4 +47,10 @@ def test_guardarBoard():
 
 def test_guardarDiseno():
     game = CreatorWindow()
-    game.saveDesign()
+    game.creator_board.board[0][0].click()
+    game.saveDesign("Test")
+    with open("../levels/game_levels/Test.json", "r") as file:
+        data = json.load(file)
+        data["diseno"] == [[1,0,0],[0,0,0],[0,0,0]]
+
+

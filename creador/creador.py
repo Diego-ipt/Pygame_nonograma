@@ -65,11 +65,11 @@ class CreatorBoard:
 
 #Botones utilizados para reducir y aumentar el tamano del tablero
 class SizeSaveButton:
-    def  __init__(self, x, y, width, height, text, action):
+    def  __init__(self, x, y, width, height, text, action, test_flag = None):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.action = action
-        if (text != "Test"): #No se puede usar pygame en el test
+        if (not test_flag): #No se puede usar pygame en el test
             self.font = pygame.font.Font(None, 32)
 
 
@@ -83,7 +83,7 @@ class SizeSaveButton:
         return self.rect.collidepoint(pos)
 
 class CreatorWindow:
-    def __init__(self, grid_size=SettingsManager.MAX_GRID_SIZE.value, cell_size=SettingsManager.CELL_SIZE.value):
+    def __init__(self, grid_size=SettingsManager.MIN_GRID_SIZE.value, cell_size=SettingsManager.CELL_SIZE.value):
         pygame.init()
         self.grid_size = grid_size
         self.cell_size = cell_size
@@ -95,7 +95,7 @@ class CreatorWindow:
         self.running = True
         self.size_buttons = [SizeSaveButton(self.windows_width - 100, 50, 50, 50, '+', self.increaseGrid),
                              SizeSaveButton(self.windows_width - 100, 150, 50, 50, '-', self.decreaseGrid),
-                             SizeSaveButton(self.windows_width - 100, 250, 50, 50, 'G', self.saveDesign)
+                             SizeSaveButton(self.windows_width - 100, 250, 50, 50, 'Save', self.saveDesign)
                              ]
 
     def increaseGrid(self):
@@ -111,7 +111,7 @@ class CreatorWindow:
             self.creator_board.resize(self.grid_size)
             self.creator_board.centerBoard(self.windows_width, self.windows_height)
 
-    def saveDesign(self):
+    def saveDesign(self, test_name = None):
         print("Guardando diseño")
         # Obtiene el diseño actual del tablero
         design = self.creator_board.getBoardClicked()
@@ -125,17 +125,23 @@ class CreatorWindow:
             print(f"Creando el directorio: {base_dir}")
             os.makedirs(base_dir)
 
-        # Encuentra el siguiente número disponible para el archivo de nivel
-        num_nivel = 1
-        while os.path.exists(os.path.join(base_dir, f"nivel_{num_nivel}.json")):
-            num_nivel += 1
+        #para debugear
+        if test_name:
+            name_nivel = f"{test_name}.json"
 
-        # Nombre del archivo
-        name_nivel = f"nivel_{num_nivel}.json"
+        else:
+        # Encuentra el siguiente número disponible para el archivo de nivel
+            num_nivel = 1
+            while os.path.exists(os.path.join(base_dir, f"nivel_{num_nivel}.json")):
+                num_nivel += 1
+
+            # Nombre del archivo
+            name_nivel = f"nivel_{num_nivel}.json"
+
         file_path = os.path.join(base_dir, name_nivel)
 
         nivel_info = {
-            "nivel": num_nivel,
+            "nivel": name_nivel if test_name else num_nivel,
             "diseno": design
         }
 
