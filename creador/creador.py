@@ -35,6 +35,7 @@ class CreatorBoard:
                 color = cell.get_color()
                 pygame.draw.rect(surface, color, (col * cell_size + 1, row * cell_size + 1, cell_size - 2, cell_size - 2))
 
+    #Maneja el click en el tablero
     def handle_click(self, pos, cell_size):
         row = int(pos[1] // cell_size)
         col = int(pos[0] // cell_size)
@@ -46,6 +47,7 @@ class CreatorBoard:
         self.grid_size = new_grid_size
         self.board = [[Cell() for _ in range(new_grid_size)] for _ in range(new_grid_size)]
 
+    #devuelve el tablero , false es blanco y true negro
     def getBoardClicked(self):
         return [[cell.clicked for cell in row] for row in self.board]
 
@@ -151,9 +153,7 @@ class CreatorWindow:
             json.dump(nivel_info, file)
 
         print(f"{name_nivel} Guardado en {file_path}")
-
-    def volverAlMenu(self):
-        return True
+        return name_nivel
 
     def handle_events(self, events, offset):
         for event in events:
@@ -165,9 +165,9 @@ class CreatorWindow:
                     self.creator_board.handle_click(pos, self.cell_size)
 
     def run(self, main_window, x, y, events):
-        if self.running == True:
+        if self.running:
             self.handle_events(events, (x,y))
-        self.surface.fill(SettingsManager.BACKGROUND_COLOR.value)
+        self.surface.fill(GRIS)
         self.creator_board.draw(self.surface, self.cell_size)
         main_window.blit(self.surface, (x, y))
         return False
