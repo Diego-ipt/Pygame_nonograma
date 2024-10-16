@@ -124,12 +124,23 @@ class CreatorWindow:
         if not os.path.exists(levels_dir):
             os.makedirs(levels_dir)
 
-        name_nivel = "level_1" + ".json"
+        #encuentra el siguiente numero disponible
+        num_nivel = 1
+        while os.path.exists(os.path.join(levels_dir, f"nivel_{num_nivel}.json")):
+            num_nivel += 1
+
+        #nombre del archivo
+        name_nivel = f"nivel_{num_nivel}.json"
         file_path = os.path.join(levels_dir, name_nivel)
+
+        nivel_info = {
+            "nivel": num_nivel,
+            "diseno": design
+        }
 
         # guarda el tablero en un archivo json
         with open(file_path, 'w') as file:
-            json.dump(design, file)
+            json.dump(nivel_info, file)
 
         print(f"{name_nivel} Guardado en {file_path}")
 
