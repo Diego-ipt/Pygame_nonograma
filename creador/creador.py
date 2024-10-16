@@ -22,7 +22,6 @@ class Cell:
     def get_color(self):
         return SettingsManager.CLICKED_COLOR.value if self.clicked else SettingsManager.DEFAULT_COLOR.value
 
-
 class CreatorBoard:
     def __init__(self, grid_size, cell_size, x_offset = 0, y_offset = 0):
         self.grid_size = grid_size
@@ -59,10 +58,11 @@ class CreatorBoard:
         self.x_offset = (window_width - board_width) // 2
         self.y_offset = (window_height - board_height) // 2
 
-
+    def getBoardClicked(self):
+        return [[cell.clicked for cell in row] for row in self.board]
 
 #Botones utilizados para reducir y aumentar el tamano del tablero
-class SizeButton:
+class SizeSaveButton:
     def  __init__(self, x, y, width, height, text, action):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
@@ -89,24 +89,28 @@ class CreatorWindow:
         self.windows_height = 500
         self.window = pygame.display.set_mode((self.windows_width, self.windows_height))
         self.clock = pygame.time.Clock()
-        self.board = CreatorBoard(grid_size, cell_size, 50, 50)
+        self.creator_board = CreatorBoard(grid_size, cell_size, 50, 50)
         self.running = True
-        self.size_buttons = [SizeButton(self.windows_width - 100, 50, 50, 50, '+', self.increaseGrid),
-                             SizeButton(self.windows_width - 100, 150, 50, 50, '-', self.decreaseGrid)
-        ]
+        self.size_buttons = [SizeSaveButton(self.windows_width - 100, 50, 50, 50, '+', self.increaseGrid),
+                             SizeSaveButton(self.windows_width - 100, 150, 50, 50, '-', self.decreaseGrid),
+                             SizeSaveButton(self.windows_width - 100, 150, 50, 50, '-', self.saveDesign)
+                             ]
 
     def increaseGrid(self):
         if self.grid_size < SettingsManager.MAX_GRID_SIZE.value:
             self.grid_size += 1
-            self.board.resize(self.grid_size)
-            self.board.centerBoard(self.windows_width, self.windows_height)
+            self.creator_board.resize(self.grid_size)
+            self.creator_board.centerBoard(self.windows_width, self.windows_height)
 
     #Incrementa el tamano del tablero
     def decreaseGrid(self):
         if self.grid_size > SettingsManager.MIN_GRID_SIZE.value:
             self.grid_size -= 1
-            self.board.resize(self.grid_size)
-            self.board.centerBoard(self.windows_width, self.windows_height)
+            self.creator_board.resize(self.grid_size)
+            self.creator_board.centerBoard(self.windows_width, self.windows_height)
+
+    def saveDesign(self):
+        print("Guardando diseño")
 
 
     #Decrementa el tamano del tablero
@@ -116,9 +120,9 @@ class CreatorWindow:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 pos = event.pos
-                if self.board.x_offset <= pos[0] < self.board.x_offset + self.grid_size * self.cell_size and \
-                        self.board.y_offset <= pos[1] < self.board.y_offset + self.grid_size * self.cell_size:
-                    self.board.handle_click(event.pos)
+                if self.creator_board.x_offset <= pos[0] < self.creator_board.x_offset + self.grid_size * self.cell_size and \
+                        self.creator_board.y_offset <= pos[1] < self.creator_board.y_offset + self.grid_size * self.cell_size:
+                    self.creator_board.handle_click(event.pos)
                 else:
                     for button in self.size_buttons:
                         if button.isClicked(pos):
@@ -129,13 +133,12 @@ class CreatorWindow:
             self.clock.tick(120)
             self.handle_events()
             self.window.fill(SettingsManager.BACKGROUND_COLOR.value)
-            self.board.draw(self.window)
-            self.board.centerBoard(self.windows_width, self.windows_height)
+            self.creator_board.draw(self.window)
+            self.creator_board.centerBoard(self.windows_width, self.windows_height)
             for button in self.size_buttons:
                 button.draw(self.window)
             pygame.display.flip()
         pygame.quit()
-
 
 if __name__ == "__main__":
     game = CreatorWindow()
