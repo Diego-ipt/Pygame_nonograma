@@ -4,10 +4,14 @@ from nonograma_core.Logica.tablero_nonograma import *
 from nonograma_core.Logica.nonograma_numeros import *
 from nonograma_core.Ventanas.VentanaBase import *
 from nonograma_core.Elementos_graficos.AssetManager import *
+from creador.creador import *
 
 class VentanaCrearNonograma(VentanaBase):
     def __init__(self, pantalla, cambiar_ventana):
         super().__init__(pantalla, cambiar_ventana)
+        creador = CreatorWindow()
+        creador.run()
+
 
     def dibujar(self):
         self.pantalla.fill(GRIS)

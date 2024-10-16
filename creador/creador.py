@@ -2,7 +2,7 @@ import pygame
 import os
 import json
 from enum import Enum
-from nonograma_core.colores import *
+from nonograma_core.Elementos_graficos.colores import *
 
 class SettingsManager(Enum):
     MIN_GRID_SIZE = 5
@@ -113,36 +113,38 @@ class CreatorWindow:
 
     def saveDesign(self):
         print("Guardando diseño")
-        #guarda el tablero ya pintado en design
+        # Obtiene el diseño actual del tablero
         design = self.creator_board.getBoardClicked()
 
-        #ruta del archivo
-        #ACTUALMENTE ESTAMOS CREANDO NIVELES BASE, LOS DEL CREADOR
-        #DEL USUARIO SE GUARDARAN EN OTRO DIRECTORIO 'custom_levels'
-        directorio = "game_levels"
-        levels_dir = os.path.join("..", "levels", directorio)
-        if not os.path.exists(levels_dir):
-            os.makedirs(levels_dir)
+        # Ruta base calculada en función del archivo actual
+        script_dir = os.path.dirname(os.path.abspath(__file__))  # Directorio del archivo actual
+        base_dir = os.path.join(script_dir, "..", "levels", "game_levels")
 
-        #encuentra el siguiente numero disponible
+        # Crea el directorio si no existe
+        if not os.path.exists(base_dir):
+            print(f"Creando el directorio: {base_dir}")
+            os.makedirs(base_dir)
+
+        # Encuentra el siguiente número disponible para el archivo de nivel
         num_nivel = 1
-        while os.path.exists(os.path.join(levels_dir, f"nivel_{num_nivel}.json")):
+        while os.path.exists(os.path.join(base_dir, f"nivel_{num_nivel}.json")):
             num_nivel += 1
 
-        #nombre del archivo
+        # Nombre del archivo
         name_nivel = f"nivel_{num_nivel}.json"
-        file_path = os.path.join(levels_dir, name_nivel)
+        file_path = os.path.join(base_dir, name_nivel)
 
         nivel_info = {
             "nivel": num_nivel,
             "diseno": design
         }
 
-        # guarda el tablero en un archivo json
+        # Guarda el diseño en un archivo JSON
         with open(file_path, 'w') as file:
             json.dump(nivel_info, file)
 
         print(f"{name_nivel} Guardado en {file_path}")
+
 
 
     #Decrementa el tamano del tablero
@@ -171,9 +173,5 @@ class CreatorWindow:
                 button.draw(self.window)
             pygame.display.flip()
         pygame.quit()
-
-if __name__ == "__main__":
-    game = CreatorWindow()
-    game.run()
 
 
