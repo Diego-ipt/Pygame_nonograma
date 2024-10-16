@@ -1,4 +1,6 @@
 import pygame
+import os
+import json
 from enum import Enum
 from nonograma_core.colores import *
 
@@ -93,7 +95,7 @@ class CreatorWindow:
         self.running = True
         self.size_buttons = [SizeSaveButton(self.windows_width - 100, 50, 50, 50, '+', self.increaseGrid),
                              SizeSaveButton(self.windows_width - 100, 150, 50, 50, '-', self.decreaseGrid),
-                             SizeSaveButton(self.windows_width - 100, 150, 50, 50, '-', self.saveDesign)
+                             SizeSaveButton(self.windows_width - 100, 250, 50, 50, 'G', self.saveDesign)
                              ]
 
     def increaseGrid(self):
@@ -111,6 +113,25 @@ class CreatorWindow:
 
     def saveDesign(self):
         print("Guardando diseño")
+        #guarda el tablero ya pintado en design
+        design = self.creator_board.getBoardClicked()
+
+        #ruta del archivo
+        #ACTUALMENTE ESTAMOS CREANDO NIVELES BASE, LOS DEL CREADOR
+        #DEL USUARIO SE GUARDARAN EN OTRO DIRECTORIO 'custom_levels'
+        directorio = "game_levels"
+        levels_dir = os.path.join("..", "levels", directorio)
+        if not os.path.exists(levels_dir):
+            os.makedirs(levels_dir)
+
+        name_nivel = "level_1" + ".json"
+        file_path = os.path.join(levels_dir, name_nivel)
+
+        # guarda el tablero en un archivo json
+        with open(file_path, 'w') as file:
+            json.dump(design, file)
+
+        print(f"{name_nivel} Guardado en {file_path}")
 
 
     #Decrementa el tamano del tablero
