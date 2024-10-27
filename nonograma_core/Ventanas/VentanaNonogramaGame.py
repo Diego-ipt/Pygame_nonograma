@@ -9,9 +9,10 @@ from nonograma_core.Elementos_graficos.AssetManager import *
 
 
 class VentanaNonogramaGame(VentanaBase):
-    def __init__(self, pantalla, cambiar_ventana):
+    def __init__(self, pantalla, cambiar_ventana, game):
         super().__init__(pantalla, cambiar_ventana)
-        self.game = Game()
+        self.game = game
+
         self.running = True
 
     # En el bucle principal del juego

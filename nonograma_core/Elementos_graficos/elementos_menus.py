@@ -78,3 +78,37 @@ def actualizar_grid(grid_estado, probabilidad_cambio=0.1):
             if random.random() < probabilidad_cambio:
                 grid_estado[fila][columna] = not grid_estado[fila][columna]
 
+def mostrar_lista_nombres(pantalla, nombres, x, y, ancho, alto, color_base, color_presionado, color_texto, fuente, accion=None):
+    """
+    Muestra una lista de nombres seleccionables en la pantalla.
+
+    :param pantalla: Superficie de Pygame donde se dibujará la lista.
+    :param nombres: Lista de nombres a mostrar.
+    :param x: Coordenada x de la esquina superior izquierda de la lista.
+    :param y: Coordenada y de la esquina superior izquierda de la lista.
+    :param ancho: Ancho de cada elemento de la lista.
+    :param alto: Alto de cada elemento de la lista.
+    :param color_base: Color base de los elementos.
+    :param color_presionado: Color de los elementos cuando se presionan.
+    :param color_texto: Color del texto.
+    :param fuente: Fuente del texto.
+    :param accion: Función a ejecutar cuando se selecciona un nombre.
+    :return: El nombre seleccionado o None si no se seleccionó ninguno.
+    """
+    raton = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+
+    for i, nombre in enumerate(nombres):
+        item_y = y + i * alto
+        if x + ancho > raton[0] > x and item_y + alto > raton[1] > item_y:
+            pygame.draw.rect(pantalla, color_presionado, (x, item_y, ancho, alto))
+            if click[0] == 1:
+                if accion is not None:
+                    accion(nombre)
+                return nombre
+        else:
+            pygame.draw.rect(pantalla, color_base, (x, item_y, ancho, alto))
+
+        mostrar_texto(nombre, fuente, color_texto, pantalla, x + (ancho // 2), item_y + (alto // 2))
+    
+    return None

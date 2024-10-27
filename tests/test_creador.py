@@ -1,5 +1,5 @@
 import pytest
-from creador.creador import *
+from nonograma_core.Logica.creador import *
 
 # Actualmente no se usa esta clase
 # def test_claseBoton():

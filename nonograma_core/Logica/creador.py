@@ -118,10 +118,49 @@ class CreatorWindow:
         print("Guardando diseño")
         # Obtiene el diseño actual del tablero
         design = self.creator_board.getBoardClicked()
+        grid_size = self.grid_size
 
         # Ruta base calculada en función del archivo actual
-        script_dir = os.path.dirname(os.path.abspath(__file__))  # Directorio del archivo actual
-        base_dir = os.path.join(script_dir, "..", "levels", "game_levels")
+        base_dir = os.path.join("levels", "Personalizados")
+
+        # Crea el directorio si no existe
+        if not os.path.exists(base_dir):
+            print(f"Creando el directorio: {base_dir}")
+            os.makedirs(base_dir)
+
+        #para debugear
+        if test_name:
+            name_nivel = f"{test_name}_size_{grid_size}.json"
+        else:
+            # Encuentra el siguiente número disponible para el archivo de nivel
+            num_nivel = 1
+            while os.path.exists(os.path.join(base_dir, f"nivel_{num_nivel}_size_{grid_size}.json")):
+                num_nivel += 1
+
+            # Nombre del archivo
+            name_nivel = f"nivel_{num_nivel}_size_{grid_size}.json"
+
+        file_path = os.path.join(base_dir, name_nivel)
+
+        nivel_info = {
+            "nivel": name_nivel if test_name else num_nivel,
+            "diseno": design,
+            "grid_size": grid_size
+        }
+
+        # Guarda el diseño en un archivo JSON
+        with open(file_path, 'w') as file:
+            json.dump(nivel_info, file)
+
+        print(f"{name_nivel} Guardado en {file_path}")
+        return name_nivel
+        print("Guardando diseño")
+        # Obtiene el diseño actual del tablero
+        design = self.creator_board.getBoardClicked()
+
+        # Ruta base calculada en función del archivo actual
+        # script_dir = os.path.dirname(os.path.abspath(__file__))  # Directorio del archivo actual
+        base_dir = os.path.join("levels", "Personalizados")
 
         # Crea el directorio si no existe
         if not os.path.exists(base_dir):

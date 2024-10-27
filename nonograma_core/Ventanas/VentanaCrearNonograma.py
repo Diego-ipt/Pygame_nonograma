@@ -1,6 +1,6 @@
 from nonograma_core.Elementos_graficos.elementos_menus import *
 from nonograma_core.Ventanas.VentanaBase import *
-from creador.creador import CreatorWindow
+from nonograma_core.Logica.creador import CreatorWindow
 
 
 class VentanaCrearNonograma(VentanaBase):
