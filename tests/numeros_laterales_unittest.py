@@ -2,10 +2,10 @@ import unittest
 import sys
 import os
 
-# Add the directory containing nonograma_core to the Python path
-sys.path.append(os.path.abspath(os.path.join('nonograma_core' 'Logica')))
+# Add the parent directory of 'nonograma_core' to the system path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from nonograma_numeros import procesar_matriz
+from nonograma_core.Logica.nonograma_numeros import *
 
 
 # test_nonograma_numeros.py
