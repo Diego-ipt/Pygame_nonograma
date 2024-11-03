@@ -69,8 +69,13 @@ def dibujar_grid(pantalla, filas, columnas, tamano_celda, color_activo, color_in
         for columna in range(columnas):
             x = columna * tamano_celda
             y = fila * tamano_celda
-            color = color_activo if grid_estado[fila][columna] else color_inactivo
-            pygame.draw.rect(pantalla, color, (x, y, tamano_celda, tamano_celda))
+            celda_surface = pygame.Surface((tamano_celda, tamano_celda), pygame.SRCALPHA)
+            # Definir el color con transparencia (valor alfa entre 0 y 255)
+            color = (*color_activo[:3], random.randrange(25, 50)) if grid_estado[fila][columna] else (*color_inactivo[:3], 255)
+            # Rellenar la superficie con el color y la transparencia
+            celda_surface.fill(color)
+            # Dibujar la celda en la pantalla
+            pantalla.blit(celda_surface, (x, y))
 
 def actualizar_grid(grid_estado, probabilidad_cambio=0.1):
     for fila in range(len(grid_estado)):
