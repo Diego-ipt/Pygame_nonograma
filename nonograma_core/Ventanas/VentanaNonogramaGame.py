@@ -5,7 +5,7 @@ from nonograma_core.Elementos_graficos.colores import *
 from nonograma_core.Logica.tablero_nonograma import *
 from nonograma_core.Logica.nonograma_numeros import *
 from nonograma_core.Ventanas.VentanaBase import *
-from nonograma_core.Elementos_graficos.AssetManager import *
+from nonograma_core.Elementos_graficos.AssetManager import AssetManager
 
 
 class VentanaNonogramaGame(VentanaBase):
@@ -23,7 +23,7 @@ class VentanaNonogramaGame(VentanaBase):
         mostrar_texto("Nivel X", fuente, NEGRO, pantalla, 80, 50)
 
         filas, columnas = procesar_matriz(self.game.board.matriz_solucion)
-        game_position = (80, 120)
+        game_position = (120, 160)
 
         tamano_celda = self.game.getCellSize()
         offset_x = game_position[0]
@@ -35,22 +35,24 @@ class VentanaNonogramaGame(VentanaBase):
         for i, fila in enumerate(filas):
             if not fila:
                 mostrar_texto("0", fuente, NEGRO, pantalla,
-                              offset_x - 20,
+                              offset_x - 40,
                               offset_y + i * tamano_celda + tamano_celda // 2)
             else:
                 for k, num in enumerate(fila):
                     mostrar_texto(str(num), fuente, NEGRO, pantalla,
-                                  offset_x - 20 - len(fila) * 10 + k * 30,
+                                  offset_x - 40 - len(fila) * 15 + k * 25,
                                   offset_y + i * tamano_celda + tamano_celda // 2)
 
         for j, columna in enumerate(columnas):
             if not columna:  # Si no hay bloques, muestra 0
-                mostrar_texto("0", fuente, NEGRO, pantalla, offset_x + j * tamano_celda + tamano_celda // 2, offset_y - 20)
+                mostrar_texto("0", fuente, NEGRO, pantalla,
+                              offset_x + j * tamano_celda + tamano_celda // 2,
+                              offset_y - 40)
             else:
                 for k, num in enumerate(columna):
                     mostrar_texto(str(num), fuente, NEGRO, pantalla,
                                   offset_x + j * tamano_celda + tamano_celda // 2,
-                                  offset_y - 20 - len(columna) * 10 + k * 30)
+                                  offset_y - 40 - len(columna) * 15 + k * 25)
 
         boton("Volver al menú", 500, 100, 200, 60, GRIS, AZUL_OSCURO, pantalla,
               lambda: self.cambiar_ventana('menu_principal'))
