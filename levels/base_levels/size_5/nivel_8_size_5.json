@@ -1,0 +1,13 @@
+{
+    "nivel": 8,
+    "Name": "mariposa",
+    "diseno": [
+      [false, true, false, true, false],
+      [true, false, true, false, true],
+      [false, true, false, true, false],
+      [true, false, true, false, true],
+      [false, true, false, true, false]
+    ],
+    "grid_size": 5
+  }
+  

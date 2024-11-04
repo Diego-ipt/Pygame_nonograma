@@ -42,10 +42,13 @@ def mostrar_texto(texto, fuente, color, pantalla, x, y):
 accion_ejecutada = False
 
 # Función para los botones
-def boton(texto, x, y, ancho, alto, color_base, color_presionado, pantalla, accion=None, color_text=NEGRO):
+def boton(texto, x, y, ancho, alto, color_base, color_presionado, pantalla, accion=None, color_text=NEGRO, font=None):
     global accion_ejecutada
     raton = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
+
+    # Usa la fuente predeterminada si no se pasa una
+    font = font or fuente
 
     if x + ancho > raton[0] > x and y + alto > raton[1] > y:
         if color_presionado != NOTHING:
@@ -61,7 +64,7 @@ def boton(texto, x, y, ancho, alto, color_base, color_presionado, pantalla, acci
     if click[0] == 0:
         accion_ejecutada = False
 
-    mostrar_texto(texto, fuente, color_text, pantalla, x + (ancho // 2), y + (alto // 2))
+    mostrar_texto(texto, font, color_text, pantalla, x + (ancho // 2), y + (alto // 2))
 
 # Función para dibujar una cuadrícula menu
 def dibujar_grid(pantalla, filas, columnas, tamano_celda, color_activo, color_inactivo, grid_estado):

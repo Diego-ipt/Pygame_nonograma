@@ -1,0 +1,13 @@
+{
+    "nivel": 7,
+    "Name": "pajaro",
+    "diseno": [
+      [false, true, false, true, false],
+      [false, true, true, true, false],
+      [true, false, false, false, true],
+      [false, true, true, true, false],
+      [true, true, true, true, true]
+    ],
+    "grid_size": 5
+  }
+  
