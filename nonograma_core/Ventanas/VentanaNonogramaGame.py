@@ -9,10 +9,10 @@ from nonograma_core.Elementos_graficos.AssetManager import AssetManager
 
 
 class VentanaNonogramaGame(VentanaBase):
-    def __init__(self, pantalla, cambiar_ventana, game):
+    def __init__(self, pantalla, cambiar_ventana, game, nombre_nivel):
         super().__init__(pantalla, cambiar_ventana)
         self.game = game
-
+        self.nombre_nivel = nombre_nivel
         self.running = True
 
     # En el bucle principal del juego
@@ -20,7 +20,8 @@ class VentanaNonogramaGame(VentanaBase):
         time.sleep(0.1)  # Agregar un delay de 1 segundo
         pantalla.fill(ROJO)
         pygame.display.set_caption("Nonograma Game")
-        mostrar_texto("Nivel X", fuente, NEGRO, pantalla, 80, 50)
+        texto_nivel = f"Nivel {self.nombre_nivel}"
+        mostrar_texto(texto_nivel, pygame.font.SysFont(None, 35), NEGRO, pantalla, 110, 40)
 
         filas, columnas = procesar_matriz(self.game.board.matriz_solucion)
         game_position = (120, 160)

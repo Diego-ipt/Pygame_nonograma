@@ -47,10 +47,14 @@ def test_guardarBoard():
 
 def test_guardarDiseno():
     game = CreatorWindow()
+    #deberia ser 5x5
     game.creator_board.board[0][0].click()
     game.saveDesign("Test")
-    with open("../levels/game_levels/Test.json", "r") as file:
+    with open(".../levels/base_levels/size_5/Test.json", "r") as file:
         data = json.load(file)
-        data["diseno"] == [[1,0,0],[0,0,0],[0,0,0]]
-
-
+        assert data["diseno"] == [[1,0,0,0,0],
+                                  [0,0,0,0,0],
+                                  [0,0,0,0,0],
+                                  [0,0,0,0,0],
+                                  [0,0,0,0,0],
+                                  ]

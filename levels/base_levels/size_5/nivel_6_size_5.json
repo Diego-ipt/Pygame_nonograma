@@ -1,0 +1,13 @@
+{
+    "nivel": 6,
+    "Name": "cruz",
+    "diseno": [
+      [false, false, true, false, false],
+      [false, false, true, false, false],
+      [true, true, true, true, true],
+      [false, false, true, false, false],
+      [false, false, true, false, false]
+    ],
+    "grid_size": 5
+  }
+  
