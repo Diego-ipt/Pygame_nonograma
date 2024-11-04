@@ -31,6 +31,7 @@ class VentanaElegirPartida(VentanaBase):
         self.dificultades = ["size_5", "size_7", "size_10"]
         self.indice_dificultad = 0 #para simular arreglo circular
         self.niveles = self.cargar_niveles()
+        self.nombre_nivel_elegido = ""
 
     def cambiar_dificultad(self, direccion):
         #-1 para izquierda, 1 para derecha
@@ -44,7 +45,7 @@ class VentanaElegirPartida(VentanaBase):
     def iniciar_juego(self, partida_seleccionada):
         game = partida_seleccionada  # Reinicia el juego
         game.running = True
-        self.cambiar_ventana('ventana_nonograma_game', game)
+        self.cambiar_ventana('ventana_nonograma_game', game, self.nombre_nivel_elegido)
 
     def dibujar(self):
         self.pantalla.fill(GRIS)
@@ -82,4 +83,5 @@ class VentanaElegirPartida(VentanaBase):
         grid_size = level_data['grid_size']
         matriz_solucion = level_data['diseno']
         game = Game(grid_size=grid_size, matriz_solucion=matriz_solucion)
+        self.nombre_nivel_elegido = nombre_nivel
         self.iniciar_juego(game)

@@ -1,0 +1,17 @@
+{
+    "nivel": 2,
+    "Name": "abeto",
+    "diseno": [
+        [false, false, false, false, false, false, false, true, false, false],
+        [false, false, false, false, false, false, true, true, false, false],
+        [false, false, false, false, false, true, true, true, false, false],
+        [false, false, false, false, true, true, true, true, true, false],
+        [false, false, false, true, true, true, true, true, true, false],
+        [false, false, true, true, true, true, true, true, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false]
+    ],
+    "grid_size": 10
+}

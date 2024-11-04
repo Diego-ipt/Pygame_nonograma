@@ -29,7 +29,7 @@ class JuegoNonograma:
         self.game = lvl
         self.game.running = True
 
-    def cambiar_ventana(self, nuevo_estado, game=None):
+    def cambiar_ventana(self, nuevo_estado, game=None, nombre_nivel=None):
         print(f"Cambiando a ventana: {nuevo_estado}")
         if nuevo_estado == 'menu_principal':
             self.ventana_actual = VentanaMenuPrincipal(self.pantalla, self.cambiar_ventana)
@@ -38,7 +38,7 @@ class JuegoNonograma:
         elif nuevo_estado == 'crear_nonograma':
             self.ventana_actual = VentanaCrearNonograma(self.pantalla, self.cambiar_ventana)
         elif nuevo_estado == 'ventana_nonograma_game':
-            self.ventana_actual = VentanaNonogramaGame(self.pantalla, self.cambiar_ventana, game)
+            self.ventana_actual = VentanaNonogramaGame(self.pantalla, self.cambiar_ventana, game, nombre_nivel)
         elif nuevo_estado == 'ventana_victoria':
             self.ventana_actual = VentanaVictoria(self.pantalla, self.cambiar_ventana)
 

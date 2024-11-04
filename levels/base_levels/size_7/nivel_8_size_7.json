@@ -1,0 +1,14 @@
+{
+    "nivel": 8,
+    "Name": "onda",
+    "diseno": [
+        [false, true, false, false, true, false, false],
+        [true, false, true, false, false, true, false],
+        [false, true, false, true, false, false, false],
+        [false, false, true, false, true, false, false],
+        [false, true, false, false, false, true, false],
+        [true, false, true, false, false, false, false],
+        [false, false, false, false, false, false, false]
+    ],
+    "grid_size": 7
+}
