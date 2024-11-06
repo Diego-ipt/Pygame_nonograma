@@ -4,6 +4,9 @@ from nonograma_core.Logica.tablero_nonograma import Game
 from nonograma_core.Ventanas.VentanaBase import VentanaBase
 from nonograma_core.Elementos_graficos.elementos_menus import *
 from nonograma_core.Elementos_graficos.colores import *
+from nonograma_core.Logica.registros import *
+
+
 
 def get_levels_name(carpeta_elegida):
     base_dir = os.path.join("levels", "base_levels", carpeta_elegida)
@@ -32,6 +35,37 @@ class VentanaElegirPartida(VentanaBase):
         self.indice_dificultad = 0 #para simular arreglo circular
         self.niveles = self.cargar_niveles()
         self.nombre_nivel_elegido = ""
+        self.confirmando = False #para mostrar la ventana de confirmacion
+        self.selectt = False #para confirmar si se selecciono un boton
+        self.eleccion = False   #para confirmar si se desea cargar el progreso
+        self.search = Search_progress()
+        
+    def seleccion_boton(self):
+        self.selectt = True
+
+    def iniciar_ventana_confirmacion(self):
+        self.confirmando = True
+
+    def rechazo(self):
+        self.seleccion_boton()
+        self.eleccion=False
+        self.confirmando = False
+    
+    def acepta(self):
+        self.seleccion_boton()
+        self.eleccion=True
+        self.confirmando = False
+
+    def ventana_confirmacion(self):
+        confirm_width, confirm_height = 350, 150
+
+        confirm_rect = pygame.Rect((ancho_pantalla // 2 - confirm_width // 2, alto_pantalla // 2 - confirm_height // 2), (confirm_width, confirm_height))
+
+        pygame.draw.rect(self.pantalla, NEGRO, confirm_rect)
+        mostrar_texto("¿desea cargar el progreso?", pygame.font.SysFont(None, 36), BLANCO, self.pantalla, ancho_pantalla // 2, alto_pantalla // 2 - 20)
+
+        boton("Sí", confirm_rect.left + 55, confirm_rect.top + 80, 80, 40, VERDE, VERDE_PRESIONADO, self.pantalla, self.acepta)
+        boton("No", confirm_rect.right - 140, confirm_rect.top + 80, 80, 40, ROJO, ROJO_PRESIONADO, self.pantalla, self.rechazo)
 
     def cambiar_dificultad(self, direccion):
         #-1 para izquierda, 1 para derecha
@@ -69,6 +103,11 @@ class VentanaElegirPartida(VentanaBase):
             y = 180 + (i // 5) * 100  # Posición en Y para cada fila
             boton(nombre, x, y, 80, 80, GRIS, AZUL_OSCURO, self.pantalla, lambda n=nombre: self.seleccionar_nivel(n), font=pygame.font.SysFont(None, 20))
 
+
+        if self.confirmando:
+            self.ventana_confirmacion()
+
+
     def seleccionar_nivel(self, nombre_nivel):
         # Encuentra el archivo correspondiente al nivel seleccionado
         index = self.niveles[0].index(nombre_nivel)
@@ -82,6 +121,22 @@ class VentanaElegirPartida(VentanaBase):
         # Crear una instancia de Game con los datos del nivel seleccionado
         grid_size = level_data['grid_size']
         matriz_solucion = level_data['diseno']
-        game = Game(grid_size=grid_size, matriz_solucion=matriz_solucion)
         self.nombre_nivel_elegido = nombre_nivel
-        self.iniciar_juego(game)
+
+        #search level selected
+        typelvl = "base" #cambiar cuando se eliga nivel personalizado    
+        id= (str(level_data['nivel']) + "_" + str(level_data['grid_size'])+"_"+typelvl) 
+
+        game = Game(grid_size=grid_size, matriz_solucion=matriz_solucion, identificador=id)
+        self.search.Search(id)
+
+        if(self.search.avance != None):
+            self.iniciar_ventana_confirmacion()
+            if self.selectt:
+                if self.eleccion:
+                    for row in range(grid_size):
+                        for col in range(grid_size):
+                            game.board.board[row][col].clicked = self.search.avance[row][col]
+                    self.iniciar_juego(game)
+        else:
+            self.iniciar_juego(game)

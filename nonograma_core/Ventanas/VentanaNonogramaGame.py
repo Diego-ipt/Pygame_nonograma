@@ -1,10 +1,13 @@
 import pygame
 import time
+import json
+import os
 from nonograma_core.Elementos_graficos.elementos_menus import *
 from nonograma_core.Elementos_graficos.colores import *
 from nonograma_core.Logica.tablero_nonograma import *
 from nonograma_core.Logica.nonograma_numeros import *
 from nonograma_core.Ventanas.VentanaBase import *
+from nonograma_core.Logica.registros import *
 from nonograma_core.Elementos_graficos.AssetManager import AssetManager
 
 
@@ -14,6 +17,7 @@ class VentanaNonogramaGame(VentanaBase):
         self.game = game
         self.nombre_nivel = nombre_nivel
         self.running = True
+        self.registro= Guardado(nombre_nivel, game, game.identificador)
 
     # En el bucle principal del juego
     def dibujar(self):
@@ -59,6 +63,7 @@ class VentanaNonogramaGame(VentanaBase):
               lambda: self.cambiar_ventana('menu_principal'))
         boton("Deshacer", 500, 220, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.deshacer)
         boton("Rehacer", 500, 340, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.rehacer)
+        boton("Guardar", 500, 420, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.registro.Save_progress)
 
         if self.game.run(pantalla, *game_position, pygame.event.get()):
             self.game.running = False
