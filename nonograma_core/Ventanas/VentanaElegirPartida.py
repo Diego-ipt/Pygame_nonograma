@@ -138,5 +138,7 @@ class VentanaElegirPartida(VentanaBase):
                         for col in range(grid_size):
                             game.board.board[row][col].clicked = self.search.avance[row][col]
                     self.iniciar_juego(game)
+                else:
+                    self.iniciar_juego(game)
         else:
             self.iniciar_juego(game)
