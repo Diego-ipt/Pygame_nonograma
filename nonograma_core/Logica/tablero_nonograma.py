@@ -66,7 +66,7 @@ class Board:
         return False
 
 class Game:
-    def __init__(self, grid_size=SettingsManager.GRID_SIZE.value, window_size=300, matriz_solucion=SettingsManager.matriz_solucion.value):
+    def __init__(self, grid_size=SettingsManager.GRID_SIZE.value, window_size=300, matriz_solucion=SettingsManager.matriz_solucion.value, identificador=None):
         pygame.init()
         self.cell_size = window_size / grid_size
         self.grid_size = grid_size
@@ -79,6 +79,7 @@ class Game:
         self.won = False
         self.stack = Stack()
         self.stack_redo = Stack()
+        self.identificador = identificador
 
     def draw_text(self, text, position):
         text_surface = self.font.render(text, True, (255, 0, 0))
