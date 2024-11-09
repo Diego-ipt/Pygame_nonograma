@@ -39,6 +39,8 @@ class VentanaElegirPartida(VentanaBase):
         self.selectt = False #para confirmar si se selecciono un boton
         self.eleccion = False   #para confirmar si se desea cargar el progreso
         self.search = Search_progress()
+        self.bandera_search = False
+        self.game = None
         
     def seleccion_boton(self):
         self.selectt = True
@@ -106,6 +108,19 @@ class VentanaElegirPartida(VentanaBase):
 
         if self.confirmando:
             self.ventana_confirmacion()
+        
+        if self.bandera_search:
+            if self.selectt:
+                print("Se selecciono un boton")
+                if self.eleccion:
+                    print("cargando partida con progreso")
+                    for row in range(self.game.board.grid_size):
+                        for col in range(self.game.board.grid_size):
+                            self.game.board.board[row][col].clicked = self.search.avance[row][col]
+                    self.iniciar_juego(self.game)
+                else:
+                    print("No se cargo el progreso")
+                    self.iniciar_juego(self.game)
 
 
     def seleccionar_nivel(self, nombre_nivel):
@@ -127,18 +142,12 @@ class VentanaElegirPartida(VentanaBase):
         typelvl = "base" #cambiar cuando se eliga nivel personalizado    
         id= (str(level_data['nivel']) + "_" + str(level_data['grid_size'])+"_"+typelvl) 
 
-        game = Game(grid_size=grid_size, matriz_solucion=matriz_solucion, identificador=id)
-        self.search.Search(id)
+        self.game = Game(grid_size=grid_size, matriz_solucion=matriz_solucion, identificador=id)
+        Bandera_progreso= self.search.Search(id)
 
-        if(self.search.avance != None):
+        if(Bandera_progreso):
             self.iniciar_ventana_confirmacion()
-            if self.selectt:
-                if self.eleccion:
-                    for row in range(grid_size):
-                        for col in range(grid_size):
-                            game.board.board[row][col].clicked = self.search.avance[row][col]
-                    self.iniciar_juego(game)
-                else:
-                    self.iniciar_juego(game)
+            self.bandera_search = True
         else:
-            self.iniciar_juego(game)
+            print("No se encontro el progreso")
+            self.iniciar_juego(self.game)

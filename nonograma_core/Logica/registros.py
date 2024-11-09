@@ -32,7 +32,7 @@ class Guardado:
 
 class Search_progress():
     def __init__(self):
-        print("Buscando progreso")
+        print("Inicializando buscador")
         self.avance = None
 
     def Search(self, identificador):
@@ -45,5 +45,7 @@ class Search_progress():
             with open(file_path, 'r') as file:
                 level = json.load(file)
                 self.avance = level["avance"]
-                return level["avance"]
-        return None
+            return True
+        else:
+            print(f"No se encontro progreso")
+            return False
