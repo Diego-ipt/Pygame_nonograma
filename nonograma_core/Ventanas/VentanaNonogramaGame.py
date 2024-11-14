@@ -16,8 +16,11 @@ class VentanaNonogramaGame(VentanaBase):
         super().__init__(pantalla, cambiar_ventana)
         self.game = game
         self.nombre_nivel = nombre_nivel
-        self.running = True
         self.registro= Guardado(nombre_nivel, game, game.identificador)
+
+    def victoria(self):
+        self.cambiar_ventana('ventana_victoria')
+        self.game.running = False
 
     # En el bucle principal del juego
     def dibujar(self):
@@ -59,14 +62,13 @@ class VentanaNonogramaGame(VentanaBase):
                                   offset_x + j * tamano_celda + tamano_celda // 2,
                                   offset_y - 40 - len(columna) * 15 + k * 25)
 
-        boton("Volver al menú", 500, 100, 200, 60, GRIS, AZUL_OSCURO, pantalla,
-              lambda: self.cambiar_ventana('menu_principal'))
+        boton("Volver al menú", 500, 100, 200, 60, GRIS, AZUL_OSCURO, pantalla, lambda: self.cambiar_ventana('menu_principal'))
         boton("Deshacer", 500, 220, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.deshacer)
         boton("Rehacer", 500, 340, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.rehacer)
         boton("Guardar", 500, 420, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.registro.Save_progress)
+        boton("Mostrar solucion", 500, 500, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.auto_win)
 
         if self.game.run(pantalla, *game_position, pygame.event.get()):
-            self.game.running = False
-            self.cambiar_ventana('ventana_victoria')
+            boton("Terminar", 200, 500, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.victoria)
 
         pygame.display.flip()  # Actualiza la pantalla en cada iteración del bucle

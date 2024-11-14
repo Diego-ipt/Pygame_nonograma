@@ -80,7 +80,6 @@ class VentanaElegirPartida(VentanaBase):
 
     def iniciar_juego(self, partida_seleccionada):
         game = partida_seleccionada  # Reinicia el juego
-        game.running = True
         self.cambiar_ventana('ventana_nonograma_game', game, self.nombre_nivel_elegido)
 
     def dibujar(self):
@@ -116,7 +115,7 @@ class VentanaElegirPartida(VentanaBase):
                     print("cargando partida con progreso")
                     for row in range(self.game.board.grid_size):
                         for col in range(self.game.board.grid_size):
-                            self.game.board.board[row][col].clicked = self.search.avance[row][col]
+                            self.game.board.board[row][col].clicked = int(self.search.avance[row][col])
                     self.iniciar_juego(self.game)
                 else:
                     print("No se cargo el progreso")

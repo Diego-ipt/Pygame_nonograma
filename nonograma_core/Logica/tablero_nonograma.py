@@ -40,6 +40,15 @@ class Board:
         self.board = [[Cell() for _ in range(grid_size)] for _ in range(grid_size)]
         self.matriz_solucion = matriz_solucion
 
+    def estandar_matriz(self):
+        for row in range(self.grid_size):
+            for col in range(self.grid_size):
+                if(self.matriz_solucion[row][col] == True):
+                    self.matriz_solucion[row][col] = 1
+                else:
+                    self.matriz_solucion[row][col] = 0
+
+
     def draw(self, surface):
         for row, rowOfCells in enumerate(self.board):
             for col, cell in enumerate(rowOfCells):
@@ -74,6 +83,7 @@ class Game:
         self.surface = pygame.Surface((self.window_size, self.window_size))
         self.clock = pygame.time.Clock()
         self.board = Board(grid_size, self.cell_size, matriz_solucion)
+        self.board.estandar_matriz()
         self.running = True
         self.font = pygame.font.Font(None, 74)
         self.won = False
@@ -97,13 +107,13 @@ class Game:
                     self.stack.push(pos)
 
     def run(self, main_window, x, y, events):
-        if self.running == True:
-            self.handle_events(events, (x, y))
         self.surface.fill(GRIS)
         self.board.draw(self.surface)
+        if self.running:
+            self.handle_events(events, (x, y))
+            main_window.blit(self.surface, (x, y))
         if self.won:
             return True
-        main_window.blit(self.surface, (x, y))
         return False
     
     def getCellSize(self):
@@ -120,6 +130,18 @@ class Game:
             pos_aux = self.stack_redo.pop()
             self.stack.push(pos_aux)
             self.board.handle_click(pos_aux)
+    
+    def auto_win(self):
+        for row in range(self.board.grid_size):
+            for col in range(self.board.grid_size):
+                if(self.board.matriz_solucion[row][col] == 1):
+                    self.board.board[row][col].clicked = 1
+                elif(self.board.matriz_solucion[row][col] == 0):
+                    self.board.board[row][col].clicked = 0
+                else:
+                    print("Error en la matriz solucion")
+        self.running = False
+        self.won = True
 
 # def main():
 #     pygame.init()
