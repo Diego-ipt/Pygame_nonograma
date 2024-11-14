@@ -2,6 +2,7 @@ import pygame
 from nonograma_core.Elementos_graficos.colores import *
 from nonograma_core.Logica.queueYStack import *
 from enum import Enum
+import random
 #default
 class SettingsManager(Enum):
     GRID_SIZE = 10
@@ -142,6 +143,35 @@ class Game:
                     print("Error en la matriz solucion")
         self.running = False
         self.won = True
+    
+    def help(self):
+        matriz_diferencias = [[0 for _ in range(self.board.grid_size)] for _ in range(self.board.grid_size)]
+        for j in range(self.board.grid_size):
+            for i in range(self.board.grid_size):
+                matriz_diferencias[i][j] = [self.board.matriz_solucion[i][j] - self.board.board[i][j].clicked]
+
+        for j in range(self.board.grid_size):
+            for i in range(self.board.grid_size):
+                neighbors = [(i-1, j), (i+1, j), (i, j-1), (i, j+1)]
+                valid_neighbors = [(x, y) for x, y in neighbors if 0 <= x < self.board.grid_size and 0 <= y < self.board.grid_size]
+        valid_positions = []
+        for instancia in valid_neighbors:
+            x, y = instancia
+            if matriz_diferencias[x][y] != 0:
+                valid_positions.append(instancia)
+
+        if valid_positions:
+            instancia_rand = random.choice(valid_positions)
+            x, y = instancia_rand
+            self.board.board[x][y].click()
+        else:
+            valid_positions = [(i, j) for i in range(self.board.grid_size) for j in range(self.board.grid_size) if matriz_diferencias[i][j] != 0]
+            if valid_positions:
+                instancia_rand = random.choice(valid_positions)
+                x, y = instancia_rand
+                self.board.board[x][y].click()
+            else:
+                print("Ya ganaste")
 
 # def main():
 #     pygame.init()

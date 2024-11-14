@@ -67,6 +67,7 @@ class VentanaNonogramaGame(VentanaBase):
         boton("Rehacer", 500, 340, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.rehacer)
         boton("Guardar", 500, 420, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.registro.Save_progress)
         boton("Mostrar solucion", 500, 500, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.auto_win)
+        boton("Ayuda", 500, 580, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.help)
 
         if self.game.run(pantalla, *game_position, pygame.event.get()):
             boton("Terminar", 200, 500, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.victoria)
