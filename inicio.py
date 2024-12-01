@@ -44,4 +44,3 @@ from nonograma_core.JuegoNonograma import *
 if __name__ == "__main__":
     juego_nonograma = JuegoNonograma()
     juego_nonograma.ejecutar()
-

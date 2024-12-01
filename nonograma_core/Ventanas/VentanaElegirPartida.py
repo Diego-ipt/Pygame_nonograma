@@ -64,7 +64,7 @@ class VentanaElegirPartida(VentanaBase):
         confirm_rect = pygame.Rect((ancho_pantalla // 2 - confirm_width // 2, alto_pantalla // 2 - confirm_height // 2), (confirm_width, confirm_height))
 
         pygame.draw.rect(self.pantalla, NEGRO, confirm_rect)
-        mostrar_texto("¿desea cargar el progreso?", pygame.font.SysFont(None, 36), BLANCO, self.pantalla, ancho_pantalla // 2, alto_pantalla // 2 - 20)
+        mostrar_texto("¿Desea cargar el progreso?", pygame.font.SysFont(None, 36), BLANCO, self.pantalla, ancho_pantalla // 2, alto_pantalla // 2 - 20)
 
         boton("Sí", confirm_rect.left + 55, confirm_rect.top + 80, 80, 40, VERDE, VERDE_PRESIONADO, self.pantalla, self.acepta)
         boton("No", confirm_rect.right - 140, confirm_rect.top + 80, 80, 40, ROJO, ROJO_PRESIONADO, self.pantalla, self.rechazo)
@@ -80,7 +80,6 @@ class VentanaElegirPartida(VentanaBase):
 
     def iniciar_juego(self, partida_seleccionada):
         game = partida_seleccionada  # Reinicia el juego
-        game.running = True
         self.cambiar_ventana('ventana_nonograma_game', game, self.nombre_nivel_elegido)
 
     def dibujar(self):
@@ -116,7 +115,7 @@ class VentanaElegirPartida(VentanaBase):
                     print("cargando partida con progreso")
                     for row in range(self.game.board.grid_size):
                         for col in range(self.game.board.grid_size):
-                            self.game.board.board[row][col].clicked = self.search.avance[row][col]
+                            self.game.board.board[row][col].clicked = int(self.search.avance[row][col])
                     self.iniciar_juego(self.game)
                 else:
                     print("No se cargo el progreso")
