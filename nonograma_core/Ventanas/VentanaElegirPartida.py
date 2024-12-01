@@ -107,20 +107,49 @@ class VentanaElegirPartida(VentanaBase):
 
         if self.confirmando:
             self.ventana_confirmacion()
-        
+    
         if self.bandera_search:
             if self.selectt:
-                print("Se selecciono un boton")
+                print("Se seleccionó un botón")
                 if self.eleccion:
-                    print("cargando partida con progreso")
+                    print("Cargando partida con progreso")
                     for row in range(self.game.board.grid_size):
                         for col in range(self.game.board.grid_size):
-                            self.game.board.board[row][col].clicked = int(self.search.avance[row][col])
+                            self.game.board.board[row][col].state = int(self.search.avance[row][col])
                     self.iniciar_juego(self.game)
                 else:
-                    print("No se cargo el progreso")
+                    print("No se cargó el progreso")
                     self.iniciar_juego(self.game)
 
+
+    # def seleccionar_nivel(self, nombre_nivel):
+    #     # Encuentra el archivo correspondiente al nivel seleccionado
+    #     index = self.niveles[0].index(nombre_nivel)
+    #     file_lvl = self.niveles[1][index]
+
+    #     # Cargar los datos del nivel seleccionado
+    #     dificultad_actual = self.dificultades[self.indice_dificultad]
+    #     with open(os.path.join("levels", "base_levels", dificultad_actual, file_lvl)) as file:
+    #         level_data = json.load(file)
+
+    #     # Crear una instancia de Game con los datos del nivel seleccionado
+    #     grid_size = level_data['grid_size']
+    #     matriz_solucion = level_data['diseno']
+    #     self.nombre_nivel_elegido = nombre_nivel
+
+    #     #search level selected
+    #     typelvl = "base" #cambiar cuando se eliga nivel personalizado    
+    #     id= (str(level_data['nivel']) + "_" + str(level_data['grid_size'])+"_"+typelvl) 
+
+    #     self.game = Game(grid_size=grid_size, matriz_solucion=matriz_solucion, identificador=id)
+    #     Bandera_progreso= self.search.Search(id)
+
+    #     if(Bandera_progreso):
+    #         self.iniciar_ventana_confirmacion()
+    #         self.bandera_search = True
+    #     else:
+    #         print("No se encontro el progreso")
+    #         self.iniciar_juego(self.game)
 
     def seleccionar_nivel(self, nombre_nivel):
         # Encuentra el archivo correspondiente al nivel seleccionado
@@ -137,16 +166,16 @@ class VentanaElegirPartida(VentanaBase):
         matriz_solucion = level_data['diseno']
         self.nombre_nivel_elegido = nombre_nivel
 
-        #search level selected
-        typelvl = "base" #cambiar cuando se eliga nivel personalizado    
-        id= (str(level_data['nivel']) + "_" + str(level_data['grid_size'])+"_"+typelvl) 
+        # Crear el identificador único para el progreso
+        typelvl = "base"  # Cambiar cuando se elija nivel personalizado
+        id = f"{level_data['nivel']}_{grid_size}_{typelvl}"
 
         self.game = Game(grid_size=grid_size, matriz_solucion=matriz_solucion, identificador=id)
-        Bandera_progreso= self.search.Search(id)
+        bandera_progreso = self.search.Search(id)
 
-        if(Bandera_progreso):
+        if bandera_progreso:
             self.iniciar_ventana_confirmacion()
             self.bandera_search = True
         else:
-            print("No se encontro el progreso")
+            print("No se encontró el progreso")
             self.iniciar_juego(self.game)

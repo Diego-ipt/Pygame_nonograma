@@ -23,16 +23,20 @@ class SettingsManager(Enum):
 
 class Cell:
     def __init__(self):
-        self.clicked = 0
+        self.state = 0  # 0: Desmarcada, 1: Clickeada, 2: Bandera
 
     def click(self):
-        if self.clicked == 1:
-            self.clicked = 0
-        else:
-            self.clicked = 1
+        if self.state != 2:  # Solo permite clic si no está marcada con bandera
+            self.state = 1 if self.state == 0 else 0
+
+    def toggle_flag(self):
+        if self.state != 1:  # Solo permite bandera si no está clickeada
+            self.state = 2 if self.state == 0 else 0
 
     def get_color(self):
-        return NEGRO if self.clicked==1 else BLANCO
+        if self.state == 2:  # Bandera
+            return ROJO
+        return NEGRO if self.state == 1 else BLANCO
 
 class Board:
     def __init__(self, grid_size, cell_size, matriz_solucion):
@@ -55,25 +59,31 @@ class Board:
             for col, cell in enumerate(rowOfCells):
                 color = cell.get_color()
                 pygame.draw.rect(surface, color, (col * self.cell_size + 1, row * self.cell_size + 1, self.cell_size - 2, self.cell_size - 2))
-            
+
+
+    # Retorna una matriz que refleja el estado actual de las celdas:
+    # 0: Desmarcada
+    # 1: Clickeada
+    # 2: Bandera
     def get_matrix(self):
-        # Retorna una matriz con 1 si la celda está clicada y 0 si no
-        return [[int(cell.clicked) for cell in row] for row in self.board]
-            
+        return [[cell.state for cell in row] for row in self.board]
+
     def handle_click(self, pos):
         row = int(pos[1] // self.cell_size)
         col = int(pos[0] // self.cell_size)
         if 0 <= row < self.grid_size and 0 <= col < self.grid_size:
+            previous_state = self.board[row][col].state
             self.board[row][col].click()
-            # Obtener y mostrar la matriz actualizada en tiempo real (para depuración)
-            matrix = self.get_matrix()
-            # Puedes imprimir la matriz para depuración
-            for fila in matrix:
-                print(fila)
-            if(matrix == self.matriz_solucion):
-                print("GANASTE")
-                return True
-        return False
+            return (row, col, previous_state, self.board[row][col].state)
+
+    def handle_flag(self, pos):
+        row = int(pos[1] // self.cell_size)
+        col = int(pos[0] // self.cell_size)
+        if 0 <= row < self.grid_size and 0 <= col < self.grid_size:
+            previous_state = self.board[row][col].state
+            self.board[row][col].toggle_flag()
+            return (row, col, previous_state, self.board[row][col].state)
+        
 
 class Game:
     def __init__(self, grid_size=SettingsManager.GRID_SIZE.value, window_size=300, matriz_solucion=SettingsManager.matriz_solucion.value, identificador=None):
@@ -96,16 +106,35 @@ class Game:
         text_surface = self.font.render(text, True, (255, 0, 0))
         self.surface.blit(text_surface, position)
 
+    # def handle_events(self, events, offset):
+    #     for event in events:
+    #         if event.type == pygame.QUIT:
+    #             self.running = False
+    #         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+    #             pos = (event.pos[0] - offset[0], event.pos[1] - offset[1])
+    #             if 0 <= pos[0] < self.window_size and 0 <= pos[1] < self.window_size:
+    #                 if self.board.handle_click(pos):
+    #                     self.won = True
+    #                 self.stack.push(pos)
+
     def handle_events(self, events, offset):
         for event in events:
             if event.type == pygame.QUIT:
                 self.running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 pos = (event.pos[0] - offset[0], event.pos[1] - offset[1])
                 if 0 <= pos[0] < self.window_size and 0 <= pos[1] < self.window_size:
-                    if self.board.handle_click(pos):
-                        self.won = True
-                    self.stack.push(pos)
+                    if event.button == 1:  # Click izquierdo
+                        change = self.board.handle_click(pos)
+                        if change:
+                            self.stack.push(change)
+                            if self.board.get_matrix() == self.board.matriz_solucion:
+                                self.won = True
+                    elif event.button == 3:  # Click derecho
+                        change = self.board.handle_flag(pos)
+                        if change:
+                            self.stack.push(change)
+    
 
     def run(self, main_window, x, y, events):
         self.surface.fill(GRIS)
@@ -121,17 +150,21 @@ class Game:
         return self.cell_size
     
     def deshacer(self):
-        if(self.stack.size() > 0):
-            pos_aux = self.stack.pop()
-            self.stack_redo.push(pos_aux)
-            self.board.handle_click(pos_aux)
+        if self.stack.size() > 0:
+            row, col, prev_state, _ = self.stack.pop()
+            self.stack_redo.push((row, col, self.board.board[row][col].state, prev_state))
+            self.board.board[row][col].state = prev_state
 
     def rehacer(self):
-        if(self.stack_redo.size() > 0):
-            pos_aux = self.stack_redo.pop()
-            self.stack.push(pos_aux)
-            self.board.handle_click(pos_aux)
-    
+        if self.stack_redo.size() > 0:
+             # Obtener los valores desde la pila de redo
+            row, col, current_state, prev_state = self.stack_redo.pop()
+            
+            # Restaurar el estado de la celda al estado "rehacer"
+            current_cell = self.board.board[row][col]
+            self.stack.push((row, col, current_cell.state, prev_state))  # Guardar el estado actual en undo
+            current_cell.state = current_state  # Aplicar el estado almacenado
+        
     def auto_win(self):
         for row in range(self.board.grid_size):
             for col in range(self.board.grid_size):
