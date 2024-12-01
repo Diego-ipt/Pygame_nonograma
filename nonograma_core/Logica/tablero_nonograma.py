@@ -63,6 +63,14 @@ class Board:
     # 2: Bandera
     def get_matrix(self):
         return [[cell.state for cell in row] for row in self.board]
+    
+
+     # Crear una matriz que refleja el estado actual de las celdas excluyendo el estado de banderas. Se ocupa para comparar la solucion final con la actual:
+        # 0: Desmarcada o Bandera
+        # 1: Clickeada
+    def get_matriz_actual(self):
+        return [[1 if cell.state == 1 else 0 for cell in row] for row in self.board]
+
 
     def handle_click(self, pos):
         row = int(pos[1] // self.cell_size)
@@ -70,6 +78,11 @@ class Board:
         if 0 <= row < self.grid_size and 0 <= col < self.grid_size:
             previous_state = self.board[row][col].state
             self.board[row][col].click()
+            # matriz = self.get_matrix()
+
+            # for fila in matriz:
+            #     print(fila)
+            # print("\n")
             return (row, col, previous_state, self.board[row][col].state)
 
     def handle_flag(self, pos):
@@ -78,6 +91,12 @@ class Board:
         if 0 <= row < self.grid_size and 0 <= col < self.grid_size:
             previous_state = self.board[row][col].state
             self.board[row][col].toggle_flag()
+
+            # matriz = self.get_matrix()
+
+            # for fila in matriz:
+            #     print(fila)
+            # print("\n")
             return (row, col, previous_state, self.board[row][col].state)
         
 
@@ -106,8 +125,11 @@ class Game:
         self.mostrar_solucion = not self.mostrar_solucion
         if self.mostrar_solucion == True:
             self.won = True
-        else:
-            self.won = False
+        else: 
+            if self.board.get_matriz_actual() == self.board.matriz_solucion:
+                self.won = True
+            else:
+                self.won = False       
 
     def handle_events(self, events, offset):
         for event in events:
@@ -120,13 +142,18 @@ class Game:
                         change = self.board.handle_click(pos)
                         if change:
                             self.stack.push(change)
-                            if self.board.get_matrix() == self.board.matriz_solucion:
+                            if self.board.get_matriz_actual() == self.board.matriz_solucion:
                                 self.won = True
+                            else:
+                                self.won = False
                     elif event.button == 3:  # Click derecho
                         change = self.board.handle_flag(pos)
                         if change:
                             self.stack.push(change)
-    
+                            if self.board.get_matriz_actual() == self.board.matriz_solucion:
+                                self.won = True
+                            else:
+                                self.won = False
 
     def run(self, main_window, x, y, events):
         self.surface.fill(GRIS)
@@ -135,6 +162,7 @@ class Game:
         if self.running:
             self.handle_events(events, (x, y))
             main_window.blit(self.surface, (x, y))
+        print(self.won)
         if self.won:
             return True
         return False
@@ -147,6 +175,10 @@ class Game:
             row, col, prev_state, _ = self.stack.pop()
             self.stack_redo.push((row, col, self.board.board[row][col].state, prev_state))
             self.board.board[row][col].state = prev_state
+            if self.board.get_matriz_actual() == self.board.matriz_solucion:
+                self.won = True
+            else:
+                self.won = False
 
     def rehacer(self):
         if self.stack_redo.size() > 0:
@@ -157,6 +189,10 @@ class Game:
             current_cell = self.board.board[row][col]
             self.stack.push((row, col, current_cell.state, prev_state))  # Guardar el estado actual en undo
             current_cell.state = current_state  # Aplicar el estado almacenado
+            if self.board.get_matriz_actual() == self.board.matriz_solucion:
+                self.won = True
+            else:
+                self.won = False
         
     def help(self):
         matriz_diferencias = [[0 for _ in range(self.board.grid_size)] for _ in range(self.board.grid_size)]
