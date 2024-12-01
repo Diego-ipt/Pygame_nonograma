@@ -1,14 +1,7 @@
-import pygame
-import time
-
-from nonograma_core.Elementos_graficos.Boton import Boton
 from nonograma_core.Elementos_graficos.elementos_menus import *
-from nonograma_core.Elementos_graficos.colores import *
-from nonograma_core.Logica.tablero_nonograma import *
 from nonograma_core.Logica.nonograma_numeros import *
 from nonograma_core.Ventanas.VentanaBase import *
 from nonograma_core.Logica.registros import *
-from nonograma_core.Elementos_graficos.AssetManager import AssetManager
 
 
 class VentanaNonogramaGame(VentanaBase):
@@ -21,7 +14,7 @@ class VentanaNonogramaGame(VentanaBase):
         self.mostrar_mensaje_progreso = False  # Controla si se debe mostrar el mensaje
         self.tiempo_mensaje_progreso = 0       # Registra el tiempo para mostrar el mensaje
         self.mostrar_mensaje_ayudas = False
-        self.tiempo_mensaje_ayudas = 0  
+        self.tiempo_mensaje_ayudas = 0
 
     def guardar_progreso(self):
         try:
@@ -41,9 +34,9 @@ class VentanaNonogramaGame(VentanaBase):
             self.tiempo_mensaje_ayudas = time.time()
         else:
             self.game.help()
-        
 
-        
+
+
         self.boton_volver = Boton(image=None, pos=(600, 100), text_input="Volver al menu",font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
         self.boton_deshacer = Boton(image=None, pos=(600, 200), text_input="Deshacer", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
         self.boton_rehacer = Boton(image=None, pos=(600, 300), text_input="Rehacer", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
@@ -54,7 +47,7 @@ class VentanaNonogramaGame(VentanaBase):
             self.pantalla.fill(ROJO)
             pygame.display.set_caption("Nonograma Game")
             texto_nivel = f"Nivel {self.nombre_nivel}"
-            mostrar_texto(texto_nivel, pygame.font.SysFont(None, 35), NEGRO, self.pantalla, 110, 40)
+            mostrar_texto(texto_nivel, NEGRO, self.pantalla, 110, 40, fuente=pygame.font.SysFont(None, 35))
 
             menu_mouse_pos = pygame.mouse.get_pos()
 

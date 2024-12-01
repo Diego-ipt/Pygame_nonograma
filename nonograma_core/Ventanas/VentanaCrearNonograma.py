@@ -1,9 +1,9 @@
 import sys
-
-from nonograma_core.Elementos_graficos.elementos_menus import *
+import pygame
 from nonograma_core.Ventanas.VentanaBase import VentanaBase
 from nonograma_core.Logica.creador import CreatorWindow
-from nonograma_core.Elementos_graficos.Boton import Boton
+from nonograma_core.Elementos_graficos.elementos_menus import Boton
+from nonograma_core.Elementos_graficos.colores import *
 
 class VentanaCrearNonograma(VentanaBase):
     def __init__(self, pantalla):
@@ -21,7 +21,7 @@ class VentanaCrearNonograma(VentanaBase):
 
     def run(self):
         while True:
-            pantalla.fill(VERDE)
+            self.pantalla.fill(VERDE)
             pygame.display.set_caption("Nonograma Creador")
             mouse_pos = pygame.mouse.get_pos()
 
@@ -29,18 +29,15 @@ class VentanaCrearNonograma(VentanaBase):
 
             for boton in [self.boton_volver, self.boton_mas, self.boton_menos, self.boton_guardar]:
                 boton.changeColor(mouse_pos)
-                boton.update(pantalla)
+                boton.update(self.pantalla)
 
             game_position = (80, 120)
             offset_x = game_position[0]
             offset_y = game_position[1]
 
-            if self.creador.run(pantalla, *game_position, eventos):
+            if self.creador.run(self.pantalla, *game_position, eventos):
                 self.creador.running = False
                 return 'menu_principal'
-
-            if self.guardando:
-                self.mostrarPopupGuardar()
 
             for evento in eventos:
                 if evento.type == pygame.QUIT:
@@ -62,16 +59,6 @@ class VentanaCrearNonograma(VentanaBase):
 
     def cerrarPopup(self):
         self.guardando = False
-
-    def mostrarPopupGuardar(self):
-        popup_width = 350
-        popup_height = 150
-
-        popup_rect = pygame.Rect((ancho_pantalla // 2 - popup_width // 2, alto_pantalla // 2 - popup_height // 2), (popup_width, popup_height))
-
-        pygame.draw.rect(pantalla, NEGRO, popup_rect)
-        mostrar_texto(f"Guardado como {self.nombre_nivel}", pygame.font.SysFont(None, 36), BLANCO, pantalla, ancho_pantalla // 2, alto_pantalla // 2 - 20)
-        boton("Ok", popup_rect.left + 55, popup_rect.top + 80, 80, 40, VERDE, VERDE_PRESIONADO, pantalla, lambda: self.cerrarPopup())
 
     def guardarNivel(self):
         #Guarda el nivel en un json y devuelve el nombre

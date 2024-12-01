@@ -3,7 +3,7 @@ import sys
 import random
 
 from nonograma_core.Elementos_graficos.AssetManager import AssetManager
-from nonograma_core.Elementos_graficos.Boton import Boton
+from nonograma_core.Elementos_graficos.elementos_menus import Boton
 from nonograma_core.Ventanas.VentanaBase import VentanaBase
 from nonograma_core.Elementos_graficos.colores import *
 from nonograma_core.JuegoNonograma import ANCHO_PANTALLA

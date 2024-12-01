@@ -5,10 +5,9 @@ import sys
 import pygame.font
 
 from nonograma_core.Ventanas.VentanaBase import VentanaBase
-from nonograma_core.Elementos_graficos.Boton import Boton
 from nonograma_core.Elementos_graficos.colores import *
 from nonograma_core.JuegoNonograma import ANCHO_PANTALLA, ALTO_PANTALLA
-from nonograma_core.Elementos_graficos.elementos_menus import fuente, mostrar_texto
+from nonograma_core.Elementos_graficos.elementos_menus import mostrar_texto, Boton
 from nonograma_core.Logica.registros import *
 
 
@@ -81,7 +80,7 @@ class VentanaElegirPartida(VentanaBase):
 
             #mostrar dificultas
             dificultad_texto = self.dificultades[self.indice_dificultad].replace("size_", "") + "x" + self.dificultades[self.indice_dificultad].replace("size_", "")
-            mostrar_texto(dificultad_texto, fuente, NEGRO, self.pantalla, 400, 100)
+            mostrar_texto(dificultad_texto, NEGRO, self.pantalla, 400, 100)
 
             niveles_nombres = self.niveles[0]
             botones_niveles = []

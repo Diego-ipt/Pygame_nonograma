@@ -1,59 +1,50 @@
 import pygame
-import time
-import random
-from nonograma_core.Elementos_graficos.colores import *
-from nonograma_core.Elementos_graficos.AssetManager import AssetManager
-
-# Inicializar Pygame
-pygame.init()
-
-# Cargador de recursos
-asset_manager = AssetManager()
-
-# Tamaño de la pantalla
-ancho_pantalla = 800
-alto_pantalla = 650
-pantalla = pygame.display.set_mode((ancho_pantalla, alto_pantalla))
-
-# Definir fuente de texto
-fuente = pygame.font.SysFont(None, 40)
-
-# Icono
-icono = asset_manager.cargar_imagen("Iconojuego.jpg")
-pygame.display.set_caption("Nonograma_Game")
-pygame.display.set_icon(icono)
 
 # Función para mostrar texto en la pantalla
-def mostrar_texto(texto, fuente, color, pantalla, x, y):
+def mostrar_texto(texto, color, pantalla, x, y, fuente=pygame.font.SysFont(None, 40)):
     superficie_texto = fuente.render(texto, True, color)
     rect_texto = superficie_texto.get_rect(center=(x, y))
     pantalla.blit(superficie_texto, rect_texto)
 
-# Variable global para controlar el estado del clic
-accion_ejecutada = False
+class Boton:
+    def __init__(self, image, pos, text_input, font, base_color, hover_color, rect_padding= (10,10)):
+        ''''''
+        self.image = image
+        self.x_pos = pos[0]
+        self.y_pos = pos[1]
+        self.font = font
+        self.base_color, self.hover_color = base_color, hover_color
+        self.curr_color = base_color
+        self.text_input = text_input
+        self.text = self.font.render(self.text_input, True, "black")
+        if self.image is None:
+            self.image = self.text
+        self.rect = self.image.get_rect(center=(self.x_pos,self.y_pos))
+        self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
+        self.rect_padding = rect_padding
 
-# Función para los botones
-def boton(texto, x, y, ancho, alto, color_base, color_presionado, pantalla, accion=None, color_text=NEGRO, font=None):
-    global accion_ejecutada
-    raton = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
+        self.hitbox = pygame.Rect(
+            self.text_rect.left - self.rect_padding[0],
+            self.text_rect.top - self.rect_padding[1],
+            self.text_rect.width + 2 * self.rect_padding[0],
+            self.text_rect.height + 2 * self.rect_padding[1]
+        )
 
-    # Usa la fuente predeterminada si no se pasa una
-    font = font or fuente
+    def update(self, screen):
 
-    if x + ancho > raton[0] > x and y + alto > raton[1] > y:
-        if color_presionado != NOTHING:
-            pygame.draw.rect(pantalla, color_presionado, (x, y, ancho, alto))
-        if click[0] == 1 and accion is not None and not accion_ejecutada:
-            accion()
-            accion_ejecutada = True
-    else:
-        if color_base != NOTHING:
-            pygame.draw.rect(pantalla, color_base, (x, y, ancho, alto))
+        pygame.draw.rect(screen, self.curr_color, self.hitbox, border_radius=5)
 
-    # Resetea la acción cuando se suelta el botón del ratón
-    if click[0] == 0:
-        accion_ejecutada = False
+        #Soporte para imagen de fondo de boton
+        if self.image is not None:
+            screen.blit(self.image, self.rect)
 
-    mostrar_texto(texto, font, color_text, pantalla, x + (ancho // 2), y + (alto // 2))
+        screen.blit(self.text, self.text_rect)
 
+    def checkInput(self, pos):
+        return self.hitbox.collidepoint(pos)
+
+    def changeColor(self, pos):
+        if self.hitbox.collidepoint(pos):
+            self.curr_color = self.hover_color
+        else:
+            self.curr_color = self.base_color
