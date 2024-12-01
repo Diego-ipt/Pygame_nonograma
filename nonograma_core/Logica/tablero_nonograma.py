@@ -33,9 +33,9 @@ class Cell:
         if self.state != 1:  # Solo permite bandera si no está clickeada
             self.state = 2 if self.state == 0 else 0
 
-    def get_color(self):
-        if self.state == 2:  # Bandera
-            return ROJO
+    def get_color(self): 
+        if self.state == 2: # Bandera 
+            return BLANCO # Volver al color blanco para que la X sea visible
         return NEGRO if self.state == 1 else BLANCO
 
 class Board:
@@ -51,11 +51,15 @@ class Board:
                 if mostrar_solucion:
                     # Dibuja usando la matriz solución
                     color = NEGRO if self.matriz_solucion[row][col] == 1 else BLANCO
+                    pygame.draw.rect(surface, color, (col * self.cell_size + 1, row * self.cell_size + 1, self.cell_size - 2, self.cell_size - 2))
                 else:
                     # Dibuja usando el estado actual del tablero
                     color = cell.get_color()
-                pygame.draw.rect(surface, color, (col * self.cell_size + 1, row * self.cell_size + 1, self.cell_size - 2, self.cell_size - 2))
-
+                    pygame.draw.rect(surface, color, (col * self.cell_size + 1, row * self.cell_size + 1, self.cell_size - 2, self.cell_size - 2))
+                    if cell.state == 2: # Dibuja una X para las celdas marcadas con bandera
+                        thickness = 6 # Ajusta el grosor de las líneas diagonales
+                        pygame.draw.line(surface, NEGRO, (col * self.cell_size + 1, row * self.cell_size + 1), (col * self.cell_size + self.cell_size - 1, row * self.cell_size + self.cell_size - 1), thickness) 
+                        pygame.draw.line(surface, NEGRO, (col * self.cell_size + self.cell_size - 1, row * self.cell_size + 1), (col * self.cell_size + 1, row * self.cell_size + self.cell_size - 1), thickness)
 
     # Retorna una matriz que refleja el estado actual de las celdas:
     # 0: Desmarcada
