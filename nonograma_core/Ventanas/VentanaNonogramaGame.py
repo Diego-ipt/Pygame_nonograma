@@ -1,14 +1,7 @@
-import pygame
-import time
-
-from nonograma_core.Elementos_graficos.Boton import Boton
 from nonograma_core.Elementos_graficos.elementos_menus import *
-from nonograma_core.Elementos_graficos.colores import *
-from nonograma_core.Logica.tablero_nonograma import *
 from nonograma_core.Logica.nonograma_numeros import *
 from nonograma_core.Ventanas.VentanaBase import *
 from nonograma_core.Logica.registros import *
-from nonograma_core.Elementos_graficos.AssetManager import AssetManager
 
 
 class VentanaNonogramaGame(VentanaBase):
@@ -29,7 +22,7 @@ class VentanaNonogramaGame(VentanaBase):
             self.pantalla.fill(ROJO)
             pygame.display.set_caption("Nonograma Game")
             texto_nivel = f"Nivel {self.nombre_nivel}"
-            mostrar_texto(texto_nivel, pygame.font.SysFont(None, 35), NEGRO, self.pantalla, 110, 40)
+            mostrar_texto(texto_nivel, NEGRO, self.pantalla, 110, 40, fuente=pygame.font.SysFont(None, 35))
 
             menu_mouse_pos = pygame.mouse.get_pos()
 
@@ -62,16 +55,18 @@ class VentanaNonogramaGame(VentanaBase):
             # Dibujar números de las filas
             for i, fila in enumerate(filas):
                 for k, num in enumerate(fila or [0]):
-                    mostrar_texto(str(num), pygame.font.SysFont(None, 30), NEGRO, self.pantalla,
+                    mostrar_texto(str(num), NEGRO, self.pantalla,
                                   offset_x - 40 - len(fila) * 15 + k * 25,
-                                  offset_y + i * tamano_celda + tamano_celda // 2)
+                                  offset_y + i * tamano_celda + tamano_celda // 2,
+                                  fuente=pygame.font.SysFont(None, 30))
 
             # Dibujar números de las columnas
             for j, columna in enumerate(columnas):
                 for k, num in enumerate(columna or [0]):
-                    mostrar_texto(str(num), pygame.font.SysFont(None, 30), NEGRO, self.pantalla,
+                    mostrar_texto(str(num), NEGRO, self.pantalla,
                                   offset_x + j * tamano_celda + tamano_celda // 2,
-                                  offset_y - 40 - len(columna) * 15 + k * 25)
+                                  offset_y - 40 - len(columna) * 15 + k * 25,
+                                  fuente=pygame.font.SysFont(None, 30))
 
 
             # Correr lógica del juego
