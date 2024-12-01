@@ -77,9 +77,9 @@ class VentanaMenuPrincipal(VentanaBase):
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.boton_elegir_partida.checkInput(menu_mouse_pos):
-                        return 'elegir-partida'
+                        return 'elegir_partida'
                     if self.boton_crear_nonograma.checkInput(menu_mouse_pos):
-                        return 'crear-nonograma'
+                        return 'crear_nonograma'
                     if self.boton_salir.checkInput(menu_mouse_pos):
                         pygame.quit()
                         sys.exit()
