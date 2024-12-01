@@ -13,6 +13,9 @@ class Queue:
     
     def size(self):
         return len(self._elements)
+
+    def clear(self):
+        self._elements.clear()  # Vacía el deque
     
 
 class Stack:
@@ -29,3 +32,5 @@ class Stack:
     def size(self):
         return len(self._elements)
     
+    def clear(self):
+        self._elements.clear()  

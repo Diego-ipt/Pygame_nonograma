@@ -79,14 +79,15 @@ class VentanaNonogramaGame(VentanaBase):
                                   offset_x + j * tamano_celda + tamano_celda // 2,
                                   offset_y - 40 - len(columna) * 15 + k * 25)
 
-        boton("Volver al menú", 500, 100, 200, 60, GRIS, AZUL_OSCURO, pantalla,
-              lambda: self.cambiar_ventana('menu_principal'), font=pygame.font.SysFont(None, 34))
-        boton("Deshacer", 500, 180, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.deshacer, font=pygame.font.SysFont(None, 34))
-        boton("Rehacer", 500, 260, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.rehacer, font=pygame.font.SysFont(None, 34))
-        boton("Guardar", 500, 340, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.guardar_progreso, font=pygame.font.SysFont(None, 34))
-        boton("Mostrar solución", 500, 420, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.toggle_mostrar_solucion, font=pygame.font.SysFont(None, 34))
+        boton("Volver al menú", 500, 50, 200, 60, GRIS, AZUL_OSCURO, pantalla,
+              lambda: self.cambiar_ventana('menu_principal'), font=pygame.font.SysFont(None, 31))
+        boton("Deshacer", 500, 130, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.deshacer, font=pygame.font.SysFont(None, 31))
+        boton("Rehacer", 500, 210, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.rehacer, font=pygame.font.SysFont(None, 31))
+        boton("Guardar progreso", 500, 290, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.guardar_progreso, font=pygame.font.SysFont(None, 31))
+        boton("Mostrar solución", 500, 370, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.toggle_mostrar_solucion, font=pygame.font.SysFont(None, 31))
+        boton("Reiniciar nivel", 500, 450, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.reset, font=pygame.font.SysFont(None, 31))
         texto_ayuda = f"Ayuda ({self.game.ayudas})"
-        boton(texto_ayuda, 500, 500, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.ayudas, font=pygame.font.SysFont(None, 34))
+        boton(texto_ayuda, 500, 530, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.ayudas, font=pygame.font.SysFont(None, 31))
 
         # Mostrar el mensaje de confirmación si está activo
         if self.mostrar_mensaje_progreso:

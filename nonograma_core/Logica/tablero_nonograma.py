@@ -42,8 +42,12 @@ class Board:
     def __init__(self, grid_size, cell_size, matriz_solucion):
         self.grid_size = grid_size
         self.cell_size = cell_size
-        self.board = [[Cell() for _ in range(grid_size)] for _ in range(grid_size)]
+        self.board = self.create_empty_board()
         self.matriz_solucion = matriz_solucion
+
+    def create_empty_board(self):
+        return [[Cell() for _ in range(self.grid_size)] for _ in range(self.grid_size)]
+
 
     def draw(self, surface, mostrar_solucion=False):
         for row, rowOfCells in enumerate(self.board):
@@ -60,6 +64,10 @@ class Board:
                         thickness = 6 # Ajusta el grosor de las líneas diagonales
                         pygame.draw.line(surface, NEGRO, (col * self.cell_size + 1, row * self.cell_size + 1), (col * self.cell_size + self.cell_size - 1, row * self.cell_size + self.cell_size - 1), thickness) 
                         pygame.draw.line(surface, NEGRO, (col * self.cell_size + self.cell_size - 1, row * self.cell_size + 1), (col * self.cell_size + 1, row * self.cell_size + self.cell_size - 1), thickness)
+
+    def reset(self):
+        self.board = self.create_empty_board()
+
 
     # Retorna una matriz que refleja el estado actual de las celdas:
     # 0: Desmarcada
@@ -159,6 +167,16 @@ class Game:
                                 self.won = True
                             else:
                                 self.won = False
+
+    def reset(self):
+        self.board.reset()
+        self.won = False
+        self.stack.clear()
+        self.stack_redo.clear()
+        # print("Tablero reiniciado")
+        # for row in self.board.get_matrix():
+        #     print(row)
+        # print("\n")
 
     def run(self, main_window, x, y, events):
         self.surface.fill(GRIS)
