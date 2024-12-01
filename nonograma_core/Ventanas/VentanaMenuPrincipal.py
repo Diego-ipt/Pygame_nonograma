@@ -10,14 +10,17 @@ from nonograma_core.JuegoNonograma import ANCHO_PANTALLA
 
 
 #Funciones para dibujar el fondo del menu
-def mostrar_fotogramas(fotogramas, indice_fotograma, x, y, pantalla):
+def mostrar_fotogramas(fotogramas, indice_fotograma, contador, retraso, x, y, pantalla):
     if len(fotogramas) > 0:
+        if contador >= retraso:
+            indice_fotograma = (indice_fotograma + 1) % len(fotogramas)
+            contador = 0
         pantalla.blit(fotogramas[indice_fotograma], (x, y))
-        indice_fotograma = (indice_fotograma + 1) % len(fotogramas)
-        return indice_fotograma
+        contador += 1
+        return indice_fotograma, contador
     else:
         print("Error: No se han cargado los fotogramas")
-        return indice_fotograma
+        return indice_fotograma, contador
 
 
 def dibujar_grid(pantalla, filas, columnas, tamano_celda, color_activo, color_inactivo, grid_estado):
@@ -48,6 +51,8 @@ class VentanaMenuPrincipal(VentanaBase):
         self.menu = self.asset.cargar_fotogramas("menu")
         self.indice_fotograma_menu = 0
         self.grid_estado = [[False for _ in range(50)] for _ in range(50)]
+        self.contador_fotogramas = 0
+        self.retraso_fotogramas = 10
 
         self.boton_elegir_partida = Boton(image=None, pos=(ANCHO_PANTALLA / 2, 350), text_input="Elegir Partida", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
         self.boton_crear_nonograma = Boton(image=None, pos=(ANCHO_PANTALLA / 2, 450), text_input="Crear Nonograma", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
@@ -58,7 +63,7 @@ class VentanaMenuPrincipal(VentanaBase):
             actualizar_grid(self.grid_estado)
             self.pantalla.fill(BLANCO)
             dibujar_grid(self.pantalla, 50, 50, 16, NEGRO, BLANCO_MENU, self.grid_estado)
-            self.indice_fotograma_menu = mostrar_fotogramas(self.menu, self.indice_fotograma_menu, 75, 0, self.pantalla)
+            self.indice_fotograma_menu, self.contador_fotogramas = mostrar_fotogramas(self.menu, self.indice_fotograma_menu, self.contador_fotogramas, self.retraso_fotogramas,75, 0, self.pantalla)
 
             menu_mouse_pos = pygame.mouse.get_pos()
 
