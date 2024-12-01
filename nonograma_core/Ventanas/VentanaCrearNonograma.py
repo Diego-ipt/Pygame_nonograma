@@ -1,39 +1,64 @@
-from nonograma_core.Elementos_graficos.elementos_menus import *
-from nonograma_core.Ventanas.VentanaBase import *
-from nonograma_core.Logica.creador import CreatorWindow
+import sys
 
+from nonograma_core.Elementos_graficos.elementos_menus import *
+from nonograma_core.Ventanas.VentanaBase import VentanaBase
+from nonograma_core.Logica.creador import CreatorWindow
+from nonograma_core.Elementos_graficos.Boton import Boton
 
 class VentanaCrearNonograma(VentanaBase):
-    def __init__(self, pantalla, cambiar_ventana):
-        super().__init__(pantalla, cambiar_ventana)
+    def __init__(self, pantalla):
+        self.pantalla = pantalla
         self.creador = CreatorWindow()
         self.running = True
         self.guardando = False
         self.nombre_nivel = None
 
-    def dibujar(self):
-        time.sleep(0.1)  # Agregar un delay de 1 segundo
-        pantalla.fill(VERDE)
-        pygame.display.set_caption("Nonograma Creador")
+        self.boton_volver = Boton(image=None, pos=(650, 100), text_input="Volver al menú", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
+        self.boton_guardar = Boton(image=None, pos=(650, 200), text_input="Guardar", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
+        self.boton_menos = Boton(image=None, pos=(150, 500), text_input="-", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO,rect_padding=(50,10))
+        self.boton_mas = Boton(image=None, pos=(320, 500), text_input="+", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO,rect_padding=(50,10))
 
-        boton("Volver al menú", 500, 100, 200, 60, GRIS, AZUL_OSCURO, pantalla, lambda: self.cambiar_ventana('menu_principal'))
-        boton("+", 500, 220, 200, 60, GRIS, AZUL_OSCURO, pantalla, lambda: self.creador.increaseGrid())
-        boton("-", 500, 340, 200, 60, GRIS, AZUL_OSCURO, pantalla, lambda: self.creador.decreaseGrid())
 
-        boton("Guardar", 500, 460, 200, 60, GRIS, AZUL_OSCURO, pantalla, lambda: self.guardarNivel())
+    def run(self):
+        while True:
+            pantalla.fill(VERDE)
+            pygame.display.set_caption("Nonograma Creador")
+            mouse_pos = pygame.mouse.get_pos()
 
-        game_position = (80, 120)
-        offset_x = game_position[0]
-        offset_y = game_position[1]
+            eventos = pygame.event.get()
 
-        if self.creador.run(pantalla, *game_position, pygame.event.get()):
-            self.creador.running = False
-            self.cambiar_ventana('menu_principal')
+            for boton in [self.boton_volver, self.boton_mas, self.boton_menos, self.boton_guardar]:
+                boton.changeColor(mouse_pos)
+                boton.update(pantalla)
 
-        if self.guardando:
-            self.mostrarPopupGuardar()
+            game_position = (80, 120)
+            offset_x = game_position[0]
+            offset_y = game_position[1]
 
-        pygame.display.flip()  # Actualiza la pantalla en cada iteración del bucle
+            if self.creador.run(pantalla, *game_position, eventos):
+                self.creador.running = False
+                return 'menu_principal'
+
+            if self.guardando:
+                self.mostrarPopupGuardar()
+
+            for evento in eventos:
+                if evento.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if evento.type == pygame.MOUSEBUTTONDOWN:
+                    if self.boton_volver.checkInput(mouse_pos):
+                        self.running = False
+                        return 'menu_principal'
+                    if self.boton_mas.checkInput(mouse_pos):
+                        self.creador.increaseGrid()
+                    if self.boton_menos.checkInput(mouse_pos):
+                        self.creador.decreaseGrid()
+                    if self.boton_guardar.checkInput(mouse_pos):
+                        self.guardarNivel()
+
+            pygame.display.flip()  # Actualiza la pantalla en cada iteración del bucle
 
     def cerrarPopup(self):
         self.guardando = False

@@ -27,7 +27,7 @@ def main():
         'menu_principal': VentanaMenuPrincipal(PANTALLA),
         'elegir_partida': VentanaElegirPartida(PANTALLA),
         'ventana_nonograma_game': None, #Sera instanciada dinamicamente para cargar aprtidas
-        # 'crear_nonograma': VentanaCrearNonograma(PANTALLA),
+        'crear_nonograma': VentanaCrearNonograma(PANTALLA),
         # 'ventana_victoria': VentanaVictoria(PANTALLA)
     }
 
