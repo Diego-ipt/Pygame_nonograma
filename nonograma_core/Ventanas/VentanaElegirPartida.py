@@ -29,12 +29,14 @@ def get_levels_file(carpeta_elegida):
     return levels
 
 class VentanaElegirPartida(VentanaBase):
-    def __init__(self, pantalla, cambiar_ventana):
-        super().__init__(pantalla, cambiar_ventana)
+    def __init__(self, pantalla):
+        self.pantalla = pantalla
+
         self.dificultades = ["size_5", "size_7", "size_10"]
         self.indice_dificultad = 0 #para simular arreglo circular
         self.niveles = self.cargar_niveles()
         self.nombre_nivel_elegido = ""
+
         self.confirmando = False #para mostrar la ventana de confirmacion
         self.selectt = False #para confirmar si se selecciono un boton
         self.eleccion = False   #para confirmar si se desea cargar el progreso

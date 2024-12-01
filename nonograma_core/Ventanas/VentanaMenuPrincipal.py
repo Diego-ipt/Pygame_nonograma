@@ -1,13 +1,43 @@
-import sys
 import pygame
-from nonograma_core.Elementos_graficos.Boton import Boton
+import sys
+import random
 
-from nonograma_core.Elementos_graficos.elementos_menus import *
+from nonograma_core.Elementos_graficos.AssetManager import AssetManager
+from nonograma_core.Elementos_graficos.Boton import Boton
+from nonograma_core.Ventanas.VentanaBase import VentanaBase
 from nonograma_core.Elementos_graficos.colores import *
-from nonograma_core.Logica.tablero_nonograma import *
-from nonograma_core.Logica.nonograma_numeros import *
-from nonograma_core.Ventanas.VentanaBase import *
-from nonograma_core.Elementos_graficos.AssetManager import *
+from nonograma_core.JuegoNonograma import ANCHO_PANTALLA
+
+
+#Funciones para dibujar el fondo del menu
+def mostrar_fotogramas(fotogramas, indice_fotograma, x, y, pantalla):
+    if len(fotogramas) > 0:
+        pantalla.blit(fotogramas[indice_fotograma], (x, y))
+        indice_fotograma = (indice_fotograma + 1) % len(fotogramas)
+        return indice_fotograma
+    else:
+        print("Error: No se han cargado los fotogramas")
+        return indice_fotograma
+
+
+def dibujar_grid(pantalla, filas, columnas, tamano_celda, color_activo, color_inactivo, grid_estado):
+    for fila in range(filas):
+        for columna in range(columnas):
+            x = columna * tamano_celda
+            y = fila * tamano_celda
+            celda_surface = pygame.Surface((tamano_celda, tamano_celda), pygame.SRCALPHA)
+            # Definir el color con transparencia (valor alfa entre 0 y 255)
+            color = (*color_activo[:3], random.randrange(25, 50)) if grid_estado[fila][columna] else (*color_inactivo[:3], 255)
+            # Rellenar la superficie con el color y la transparencia
+            celda_surface.fill(color)
+            # Dibujar la celda en la pantalla
+            pantalla.blit(celda_surface, (x, y))
+
+def actualizar_grid(grid_estado, probabilidad_cambio=0.1):
+    for fila in range(len(grid_estado)):
+        for columna in range(len(grid_estado[0])):
+            if random.random() < probabilidad_cambio:
+                grid_estado[fila][columna] = not grid_estado[fila][columna]
 
 
 class VentanaMenuPrincipal(VentanaBase):
@@ -19,9 +49,9 @@ class VentanaMenuPrincipal(VentanaBase):
         self.indice_fotograma_menu = 0
         self.grid_estado = [[False for _ in range(50)] for _ in range(50)]
 
-        self.boton_elegir_partida = Boton(image=None, pos=(270, 350), text_input="Elegir Partida", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
-        self.boton_crear_nonograma = Boton(image=None, pos=(270, 450), text_input="Crear Nonograma", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
-        self.boton_salir = Boton(image=None, pos=(270, 550), text_input="Salir del juego", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
+        self.boton_elegir_partida = Boton(image=None, pos=(ANCHO_PANTALLA / 2, 350), text_input="Elegir Partida", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
+        self.boton_crear_nonograma = Boton(image=None, pos=(ANCHO_PANTALLA / 2, 450), text_input="Crear Nonograma", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
+        self.boton_salir = Boton(image=None, pos=(ANCHO_PANTALLA / 2, 550), text_input="Salir del juego", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
 
     def run(self):
         while True:
@@ -50,3 +80,5 @@ class VentanaMenuPrincipal(VentanaBase):
                         sys.exit()
 
             pygame.display.update()
+
+

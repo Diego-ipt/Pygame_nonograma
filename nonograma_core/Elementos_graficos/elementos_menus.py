@@ -96,11 +96,6 @@ def dibujar_grid(pantalla, filas, columnas, tamano_celda, color_activo, color_in
             # Dibujar la celda en la pantalla
             pantalla.blit(celda_surface, (x, y))
 
-def actualizar_grid(grid_estado, probabilidad_cambio=0.1):
-    for fila in range(len(grid_estado)):
-        for columna in range(len(grid_estado[0])):
-            if random.random() < probabilidad_cambio:
-                grid_estado[fila][columna] = not grid_estado[fila][columna]
 
 def mostrar_lista_nombres(pantalla, nombres, x, y, ancho, alto, color_base, color_presionado, color_texto, fuente, accion=None):
     """
