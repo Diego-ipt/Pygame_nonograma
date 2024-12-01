@@ -75,7 +75,7 @@ class VentanaNonogramaGame(VentanaBase):
         boton("Deshacer", 500, 180, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.deshacer, font=pygame.font.SysFont(None, 34))
         boton("Rehacer", 500, 260, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.rehacer, font=pygame.font.SysFont(None, 34))
         boton("Guardar", 500, 340, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.guardar_progreso, font=pygame.font.SysFont(None, 34))
-        boton("Mostrar solución", 500, 420, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.auto_win, font=pygame.font.SysFont(None, 34))
+        boton("Mostrar solución", 500, 420, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.toggle_mostrar_solucion, font=pygame.font.SysFont(None, 34))
         boton("Ayuda", 500, 500, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.help, font=pygame.font.SysFont(None, 34))
 
         # Mostrar el mensaje de confirmación si está activo

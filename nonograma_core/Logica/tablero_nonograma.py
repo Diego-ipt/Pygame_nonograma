@@ -45,19 +45,15 @@ class Board:
         self.board = [[Cell() for _ in range(grid_size)] for _ in range(grid_size)]
         self.matriz_solucion = matriz_solucion
 
-    def estandar_matriz(self):
-        for row in range(self.grid_size):
-            for col in range(self.grid_size):
-                if(self.matriz_solucion[row][col] == True):
-                    self.matriz_solucion[row][col] = 1
-                else:
-                    self.matriz_solucion[row][col] = 0
-
-
-    def draw(self, surface):
+    def draw(self, surface, mostrar_solucion=False):
         for row, rowOfCells in enumerate(self.board):
             for col, cell in enumerate(rowOfCells):
-                color = cell.get_color()
+                if mostrar_solucion:
+                    # Dibuja usando la matriz solución
+                    color = NEGRO if self.matriz_solucion[row][col] == 1 else BLANCO
+                else:
+                    # Dibuja usando el estado actual del tablero
+                    color = cell.get_color()
                 pygame.draw.rect(surface, color, (col * self.cell_size + 1, row * self.cell_size + 1, self.cell_size - 2, self.cell_size - 2))
 
 
@@ -94,28 +90,24 @@ class Game:
         self.surface = pygame.Surface((self.window_size, self.window_size))
         self.clock = pygame.time.Clock()
         self.board = Board(grid_size, self.cell_size, matriz_solucion)
-        self.board.estandar_matriz()
         self.running = True
         self.font = pygame.font.Font(None, 74)
         self.won = False
         self.stack = Stack()
         self.stack_redo = Stack()
         self.identificador = identificador
+        self.mostrar_solucion = False  # Atributo para alternar entre solución y estado actual
 
     def draw_text(self, text, position):
         text_surface = self.font.render(text, True, (255, 0, 0))
         self.surface.blit(text_surface, position)
 
-    # def handle_events(self, events, offset):
-    #     for event in events:
-    #         if event.type == pygame.QUIT:
-    #             self.running = False
-    #         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-    #             pos = (event.pos[0] - offset[0], event.pos[1] - offset[1])
-    #             if 0 <= pos[0] < self.window_size and 0 <= pos[1] < self.window_size:
-    #                 if self.board.handle_click(pos):
-    #                     self.won = True
-    #                 self.stack.push(pos)
+    def toggle_mostrar_solucion(self):
+        self.mostrar_solucion = not self.mostrar_solucion
+        if self.mostrar_solucion == True:
+            self.won = True
+        else:
+            self.won = False
 
     def handle_events(self, events, offset):
         for event in events:
@@ -138,7 +130,8 @@ class Game:
 
     def run(self, main_window, x, y, events):
         self.surface.fill(GRIS)
-        self.board.draw(self.surface)
+        #se añade la opcion para mostrar solucion
+        self.board.draw(self.surface, mostrar_solucion=self.mostrar_solucion) 
         if self.running:
             self.handle_events(events, (x, y))
             main_window.blit(self.surface, (x, y))
@@ -165,18 +158,6 @@ class Game:
             self.stack.push((row, col, current_cell.state, prev_state))  # Guardar el estado actual en undo
             current_cell.state = current_state  # Aplicar el estado almacenado
         
-    def auto_win(self):
-        for row in range(self.board.grid_size):
-            for col in range(self.board.grid_size):
-                if(self.board.matriz_solucion[row][col] == 1):
-                    self.board.board[row][col].clicked = 1
-                elif(self.board.matriz_solucion[row][col] == 0):
-                    self.board.board[row][col].clicked = 0
-                else:
-                    print("Error en la matriz solucion")
-        self.running = False
-        self.won = True
-    
     def help(self):
         matriz_diferencias = [[0 for _ in range(self.board.grid_size)] for _ in range(self.board.grid_size)]
         for j in range(self.board.grid_size):
