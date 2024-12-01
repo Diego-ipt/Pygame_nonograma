@@ -121,27 +121,3 @@ class Game:
             self.stack.push(pos_aux)
             self.board.handle_click(pos_aux)
 
-# def main():
-#     pygame.init()
-#     main_window_size = (600, 600)
-#     main_window = pygame.display.set_mode(main_window_size)
-#     pygame.display.set_caption("Main Window")
-#     clock = pygame.time.Clock()
-#     game = Game()
-#     game_position = (150, 150)  # Position of the game within the main window
-
-#     running = True
-#     while running:
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 running = False
-
-#         main_window.fill((200, 200, 200))  # Fill the main window with a background color
-#         game.run(main_window, *game_position)
-#         pygame.display.flip()
-#         clock.tick(60)
-
-#     pygame.quit()
-
-# if __name__ == "__main__":
-#     main()
