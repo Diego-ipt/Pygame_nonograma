@@ -1,5 +1,7 @@
 import sys
 import pygame
+from nonograma_core.Elementos_graficos.Boton import Boton
+
 from nonograma_core.Elementos_graficos.elementos_menus import *
 from nonograma_core.Elementos_graficos.colores import *
 from nonograma_core.Logica.tablero_nonograma import *
@@ -9,47 +11,42 @@ from nonograma_core.Elementos_graficos.AssetManager import *
 
 
 class VentanaMenuPrincipal(VentanaBase):
-    def __init__(self, pantalla, cambiar_ventana):
-        super().__init__(pantalla, cambiar_ventana)
-        self.indice_fotograma_menu = 0
+    def __init__(self, pantalla):
+        self.pantalla = pantalla
+
         self.asset = AssetManager()
         self.menu = self.asset.cargar_fotogramas("menu")
+        self.indice_fotograma_menu = 0
         self.grid_estado = [[False for _ in range(50)] for _ in range(50)]
-        self.confirmando = False
 
-    def dibujar(self):
-        actualizar_grid(self.grid_estado)
-        self.pantalla.fill(BLANCO)
-        dibujar_grid(self.pantalla, 50, 50, 16, NEGRO, BLANCO_MENU, self.grid_estado)
-        self.indice_fotograma_menu = mostrar_fotogramas(self.menu, self.indice_fotograma_menu, 75, 0, self.pantalla)
+        self.boton_elegir_partida = Boton(image=None, pos=(270, 350), text_input="Elegir Partida", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
+        self.boton_crear_nonograma = Boton(image=None, pos=(270, 450), text_input="Crear Nonograma", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
+        self.boton_salir = Boton(image=None, pos=(270, 550), text_input="Salir del juego", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
 
-        boton("Elegir Partida", 270, 350, 260, 60, VIOLETA_MENU, FUCSIA, self.pantalla, lambda: self.cambiar_ventana('elegir_partida'))
-        boton("Crear Nonograma", 270, 450, 260, 60, VIOLETA_MENU, FUCSIA, self.pantalla, lambda: self.cambiar_ventana('crear_nonograma'))
-        boton("Salir del juego", 270, 550, 260, 60, VIOLETA_MENU, FUCSIA, self.pantalla, self.iniciar_ventana_confirmacion)
-        self.reloj.tick(10)
+    def run(self):
+        while True:
+            actualizar_grid(self.grid_estado)
+            self.pantalla.fill(BLANCO)
+            dibujar_grid(self.pantalla, 50, 50, 16, NEGRO, BLANCO_MENU, self.grid_estado)
+            self.indice_fotograma_menu = mostrar_fotogramas(self.menu, self.indice_fotograma_menu, 75, 0, self.pantalla)
 
-        if self.confirmando:
-            self.ventana_confirmacion()
+            menu_mouse_pos = pygame.mouse.get_pos()
 
-        self.reloj.tick(80) #fps
+            for boton in [self.boton_elegir_partida, self.boton_crear_nonograma, self.boton_salir]:
+                boton.changeColor(menu_mouse_pos)
+                boton.update(self.pantalla)
 
-    def iniciar_ventana_confirmacion(self):
-        self.confirmando = True
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.boton_elegir_partida.checkInput(menu_mouse_pos):
+                        return 'elegir-partida'
+                    if self.boton_crear_nonograma.checkInput(menu_mouse_pos):
+                        return 'crear-nonograma'
+                    if self.boton_salir.checkInput(menu_mouse_pos):
+                        pygame.quit()
+                        sys.exit()
 
-    def ventana_confirmacion(self):
-        confirm_width, confirm_height = 350, 150
-
-        confirm_rect = pygame.Rect((ancho_pantalla // 2 - confirm_width // 2, alto_pantalla // 2 - confirm_height // 2), (confirm_width, confirm_height))
-
-        pygame.draw.rect(self.pantalla, NEGRO, confirm_rect)
-        mostrar_texto("¿Seguro que quieres salir?", pygame.font.SysFont(None, 36), BLANCO, self.pantalla, ancho_pantalla // 2, alto_pantalla // 2 - 20)
-
-        boton("Sí", confirm_rect.left + 55, confirm_rect.top + 80, 80, 40, VERDE, VERDE_PRESIONADO, self.pantalla, self.salir_del_juego)
-        boton("No", confirm_rect.right - 140, confirm_rect.top + 80, 80, 40, ROJO, ROJO_PRESIONADO, self.pantalla, self.cancelar_ventana_confirmacion)
-
-    def cancelar_ventana_confirmacion(self):
-        self.confirmando = False
-
-    def salir_del_juego(self):
-        pygame.quit()
-        sys.exit()
+            pygame.display.update()
