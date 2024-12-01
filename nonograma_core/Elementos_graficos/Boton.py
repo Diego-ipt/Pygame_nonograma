@@ -2,7 +2,7 @@ import pygame
 import sys
 
 class Boton:
-    def __init__(self, image, pos, text_input, font, base_color, hover_color):
+    def __init__(self, image, pos, text_input, font, base_color, hover_color, rect_padding= (10,10)):
         ''''''
         self.image = image
         self.x_pos = pos[0]
@@ -16,16 +16,18 @@ class Boton:
             self.image = self.text
         self.rect = self.image.get_rect(center=(self.x_pos,self.y_pos))
         self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
-        self.rect_padding = 10
+        self.rect_padding = rect_padding
+
+        self.hitbox = pygame.Rect(
+            self.text_rect.left - self.rect_padding[0],
+            self.text_rect.top - self.rect_padding[1],
+            self.text_rect.width + 2 * self.rect_padding[0],
+            self.text_rect.height + 2 * self.rect_padding[1]
+        )
 
     def update(self, screen):
-        rect = pygame.Rect(
-            self.text_rect.left - self.rect_padding,
-            self.text_rect.top - self.rect_padding,
-            self.text_rect.width + 2 * self.rect_padding,
-            self.text_rect.height + 2 * self.rect_padding
-        )
-        pygame.draw.rect(screen, self.curr_color, rect, border_radius=5)
+
+        pygame.draw.rect(screen, self.curr_color, self.hitbox, border_radius=5)
 
         #Soporte para imagen de fondo de boton
         if self.image is not None:
@@ -34,12 +36,10 @@ class Boton:
         screen.blit(self.text, self.text_rect)
 
     def checkInput(self, pos):
-        if pos[0] in range(self.rect.left, self.rect.right) and pos[1] in range(self.rect.top, self.rect.bottom):
-            return True
-        return False
+        return self.hitbox.collidepoint(pos)
 
     def changeColor(self, pos):
-        if pos[0] in range(self.rect.left, self.rect.right) and pos[1] in range(self.rect.top, self.rect.bottom):
+        if self.hitbox.collidepoint(pos):
             self.curr_color = self.hover_color
         else:
             self.curr_color = self.base_color
