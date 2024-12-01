@@ -33,8 +33,8 @@ class Cell:
         if self.state != 1:  # Solo permite bandera si no está clickeada
             self.state = 2 if self.state == 0 else 0
 
-    def get_color(self): 
-        if self.state == 2: # Bandera 
+    def get_color(self):
+        if self.state == 2: # Bandera
             return BLANCO # Volver al color blanco para que la X sea visible
         return NEGRO if self.state == 1 else BLANCO
 
@@ -62,7 +62,7 @@ class Board:
                     pygame.draw.rect(surface, color, (col * self.cell_size + 1, row * self.cell_size + 1, self.cell_size - 2, self.cell_size - 2))
                     if cell.state == 2: # Dibuja una X para las celdas marcadas con bandera
                         thickness = 6 # Ajusta el grosor de las líneas diagonales
-                        pygame.draw.line(surface, NEGRO, (col * self.cell_size + 1, row * self.cell_size + 1), (col * self.cell_size + self.cell_size - 1, row * self.cell_size + self.cell_size - 1), thickness) 
+                        pygame.draw.line(surface, NEGRO, (col * self.cell_size + 1, row * self.cell_size + 1), (col * self.cell_size + self.cell_size - 1, row * self.cell_size + self.cell_size - 1), thickness)
                         pygame.draw.line(surface, NEGRO, (col * self.cell_size + self.cell_size - 1, row * self.cell_size + 1), (col * self.cell_size + 1, row * self.cell_size + self.cell_size - 1), thickness)
 
     def reset(self):
@@ -75,7 +75,7 @@ class Board:
     # 2: Bandera
     def get_matrix(self):
         return [[cell.state for cell in row] for row in self.board]
-    
+
 
      # Crear una matriz que refleja el estado actual de las celdas excluyendo el estado de banderas. Se ocupa para comparar la solucion final con la actual:
         # 0: Desmarcada o Bandera
@@ -110,7 +110,7 @@ class Board:
             #     print(fila)
             # print("\n")
             return (row, col, previous_state, self.board[row][col].state)
-        
+
 
 class Game:
     def __init__(self, grid_size=SettingsManager.GRID_SIZE.value, window_size=300, matriz_solucion=SettingsManager.matriz_solucion.value, identificador=None):
@@ -138,11 +138,11 @@ class Game:
         self.mostrar_solucion = not self.mostrar_solucion
         if self.mostrar_solucion == True:
             self.won = True
-        else: 
+        else:
             if self.board.get_matriz_actual() == self.board.matriz_solucion:
                 self.won = True
             else:
-                self.won = False       
+                self.won = False
 
     def handle_events(self, events, offset):
         for event in events:
@@ -181,7 +181,7 @@ class Game:
     def run(self, main_window, x, y, events):
         self.surface.fill(GRIS)
         #se añade la opcion para mostrar solucion
-        self.board.draw(self.surface, mostrar_solucion=self.mostrar_solucion) 
+        self.board.draw(self.surface, mostrar_solucion=self.mostrar_solucion)
         if self.running:
             self.handle_events(events, (x, y))
             main_window.blit(self.surface, (x, y))
@@ -206,7 +206,7 @@ class Game:
         if self.stack_redo.size() > 0:
              # Obtener los valores desde la pila de redo
             row, col, current_state, prev_state = self.stack_redo.pop()
-            
+
             # Restaurar el estado de la celda al estado "rehacer"
             current_cell = self.board.board[row][col]
             self.stack.push((row, col, current_cell.state, prev_state))  # Guardar el estado actual en undo
@@ -215,7 +215,7 @@ class Game:
                 self.won = True
             else:
                 self.won = False
-        
+
     # def help(self):
     #     matriz_diferencias = [[0 for _ in range(self.board.grid_size)] for _ in range(self.board.grid_size)]
     #     for j in range(self.board.grid_size):
@@ -277,7 +277,7 @@ class Game:
                 self.board.board[x][y].click()
             else:
                 self.won = True
-        
+
         if self.board.get_matriz_actual() == matriz_solucion:
             self.won = True
         else:

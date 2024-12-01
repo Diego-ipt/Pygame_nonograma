@@ -25,16 +25,27 @@ def main():
 
     ventanas = {
         'menu_principal': VentanaMenuPrincipal(PANTALLA),
-        # 'elegir_partida': VentanaElegirPartida(PANTALLA),
+        'elegir_partida': VentanaElegirPartida(PANTALLA),
+        'ventana_nonograma_game': None, #Sera instanciada dinamicamente para cargar aprtidas
         # 'crear_nonograma': VentanaCrearNonograma(PANTALLA),
-        # 'ventana_nonograma_game': VentanaNonogramaGame(PANTALLA),
         # 'ventana_victoria': VentanaVictoria(PANTALLA)
     }
 
     estado_actual = 'menu_principal'
+    partida_cargada = None
+    nombre_nivel = None
 
     while True:
+        if estado_actual == 'ventana_nonograma_game':
+            ventanas[estado_actual] = VentanaNonogramaGame(PANTALLA, partida_cargada, nombre_nivel)
+            partida_cargada = None
+            nombre_nivel = None
+
         ventana_siguiente = ventanas[estado_actual].run()
-        estado_actual = ventana_siguiente
+
+        if isinstance(ventana_siguiente, tuple): #Caso especial donde se cargo un juego al elegir aprtida
+            estado_actual, partida_cargada, nombre_nivel = ventana_siguiente
+        else:
+            estado_actual = ventana_siguiente
 
 

@@ -1,7 +1,7 @@
 import pygame
 import time
-import json
-import os
+
+from nonograma_core.Elementos_graficos.Boton import Boton
 from nonograma_core.Elementos_graficos.elementos_menus import *
 from nonograma_core.Elementos_graficos.colores import *
 from nonograma_core.Logica.tablero_nonograma import *
@@ -12,8 +12,8 @@ from nonograma_core.Elementos_graficos.AssetManager import AssetManager
 
 
 class VentanaNonogramaGame(VentanaBase):
-    def __init__(self, pantalla, cambiar_ventana, game, nombre_nivel):
-        super().__init__(pantalla, cambiar_ventana)
+    def __init__(self, pantalla, game, nombre_nivel):
+        self.pantalla = pantalla
         self.game = game
         self.nombre_nivel = nombre_nivel
         self.running = True
@@ -41,44 +41,71 @@ class VentanaNonogramaGame(VentanaBase):
             self.tiempo_mensaje_ayudas = time.time()
         else:
             self.game.help()
+        
 
-    # En el bucle principal del juego
-    def dibujar(self):
-        time.sleep(0.1)
-        pantalla.fill(ROJO)
-        pygame.display.set_caption("Nonograma Game")
-        texto_nivel = f"Nivel {self.nombre_nivel}"
-        mostrar_texto(texto_nivel, pygame.font.SysFont(None, 35), NEGRO, pantalla, 110, 40)
+        
+        self.boton_volver = Boton(image=None, pos=(600, 100), text_input="Volver al menu",font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
+        self.boton_deshacer = Boton(image=None, pos=(600, 200), text_input="Deshacer", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
+        self.boton_rehacer = Boton(image=None, pos=(600, 300), text_input="Rehacer", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
+        self.boton_guardar = Boton(image=None, pos=(600, 400), text_input="Guardar", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
 
-        filas, columnas = procesar_matriz(self.game.board.matriz_solucion)
-        game_position = (120, 160)
+    def run(self):
+        while True:
+            self.pantalla.fill(ROJO)
+            pygame.display.set_caption("Nonograma Game")
+            texto_nivel = f"Nivel {self.nombre_nivel}"
+            mostrar_texto(texto_nivel, pygame.font.SysFont(None, 35), NEGRO, self.pantalla, 110, 40)
 
-        tamano_celda = self.game.getCellSize()
-        offset_x = game_position[0]
-        offset_y = game_position[1]
+            menu_mouse_pos = pygame.mouse.get_pos()
 
-        for i, fila in enumerate(filas):
-            if not fila:
-                mostrar_texto("0", fuente, NEGRO, pantalla,
-                              offset_x - 40,
-                              offset_y + i * tamano_celda + tamano_celda // 2)
-            else:
-                for k, num in enumerate(fila):
-                    mostrar_texto(str(num), fuente, NEGRO, pantalla,
-                                  offset_x - 40 - len(fila) * 15 + k * 25,
+            for boton in [self.boton_volver, self.boton_deshacer, self.boton_rehacer, self.boton_guardar]:
+                boton.changeColor(menu_mouse_pos)
+                boton.update(self.pantalla)
+
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if evento.type == pygame.MOUSEBUTTONDOWN:
+                    if self.boton_volver.checkInput(menu_mouse_pos):
+                        self.running = False
+                        return 'menu_principal'
+                    if self.boton_deshacer.checkInput(menu_mouse_pos):
+                        self.game.deshacer()
+                    if self.boton_rehacer.checkInput(menu_mouse_pos):
+                        self.game.rehacer()
+                    if self.boton_guardar.checkInput(menu_mouse_pos):
+                        self.registro.Save_progress()
+
+
+            # Obtener posición y tamaño del tablero
+            filas, columnas = procesar_matriz(self.game.board.matriz_solucion)
+            game_position = (120, 160)
+            tamano_celda = self.game.getCellSize()
+            offset_x, offset_y = game_position
+
+            for i, fila in enumerate(filas):
+                if not fila:
+                    mostrar_texto("0", NEGRO, self.pantalla,
+                                  offset_x - 40,
                                   offset_y + i * tamano_celda + tamano_celda // 2)
+                else:
+                    for k, num in enumerate(fila):
+                        mostrar_texto(str(num), NEGRO, self.pantalla,
+                                      offset_x - 40 - len(fila) * 15 + k * 25,
+                                      offset_y + i * tamano_celda + tamano_celda // 2)
 
-        for j, columna in enumerate(columnas):
-            if not columna:
-                mostrar_texto("0", fuente, NEGRO, pantalla,
-                              offset_x + j * tamano_celda + tamano_celda // 2,
-                              offset_y - 40)
-            else:
-                for k, num in enumerate(columna):
-                    mostrar_texto(str(num), fuente, NEGRO, pantalla,
+             for j, columna in enumerate(columnas):
+                if not columna:
+                    mostrar_texto("0", NEGRO, self.pantalla,
                                   offset_x + j * tamano_celda + tamano_celda // 2,
-                                  offset_y - 40 - len(columna) * 15 + k * 25)
-
+                                  offset_y - 40)
+                else:
+                    for k, num in enumerate(columna):
+                        mostrar_texto(str(num), NEGRO, pantalla,
+                                      offset_x + j * tamano_celda + tamano_celda // 2,
+                                      offset_y - 40 - len(columna) * 15 + k * 25)
+        ##Por arreglar refactoring
         boton("Volver al menú", 500, 50, 200, 60, GRIS, AZUL_OSCURO, pantalla,
               lambda: self.cambiar_ventana('menu_principal'), font=pygame.font.SysFont(None, 31))
         boton("Deshacer", 500, 130, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.deshacer, font=pygame.font.SysFont(None, 31))
@@ -102,7 +129,9 @@ class VentanaNonogramaGame(VentanaBase):
             if time.time() - self.tiempo_mensaje_ayudas > 2:
                 self.mostrar_mensaje_ayudas = False
 
-        if self.game.run(pantalla, *game_position, pygame.event.get()):
-            boton("Terminar", 200, 500, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.victoria)
+            # Correr lógica del juego
+            if self.game.run(self.pantalla, *game_position, pygame.event.get()):
+                self.running = False
+                return 'ventana_victoria'
 
-        pygame.display.flip()  # Actualiza la pantalla en cada iteración del bucle
+            pygame.display.flip()  # Actualizar pantalla en cada iteración

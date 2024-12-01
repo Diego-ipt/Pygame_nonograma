@@ -1,9 +1,14 @@
 import json
 import os
-from nonograma_core.Logica.tablero_nonograma import Game
+import sys
+
+import pygame.font
+
 from nonograma_core.Ventanas.VentanaBase import VentanaBase
-from nonograma_core.Elementos_graficos.elementos_menus import *
+from nonograma_core.Elementos_graficos.Boton import Boton
 from nonograma_core.Elementos_graficos.colores import *
+from nonograma_core.JuegoNonograma import ANCHO_PANTALLA, ALTO_PANTALLA
+from nonograma_core.Elementos_graficos.elementos_menus import fuente, mostrar_texto
 from nonograma_core.Logica.registros import *
 
 
@@ -47,29 +52,9 @@ class VentanaElegirPartida(VentanaBase):
     def seleccion_boton(self):
         self.selectt = True
 
-    def iniciar_ventana_confirmacion(self):
-        self.confirmando = True
-
-    def rechazo(self):
-        self.seleccion_boton()
-        self.eleccion=False
-        self.confirmando = False
-    
-    def acepta(self):
-        self.seleccion_boton()
-        self.eleccion=True
-        self.confirmando = False
-
-    def ventana_confirmacion(self):
-        confirm_width, confirm_height = 350, 150
-
-        confirm_rect = pygame.Rect((ancho_pantalla // 2 - confirm_width // 2, alto_pantalla // 2 - confirm_height // 2), (confirm_width, confirm_height))
-
-        pygame.draw.rect(self.pantalla, NEGRO, confirm_rect)
-        mostrar_texto("¿Desea cargar el progreso?", pygame.font.SysFont(None, 36), BLANCO, self.pantalla, ancho_pantalla // 2, alto_pantalla // 2 - 20)
-
-        boton("Sí", confirm_rect.left + 55, confirm_rect.top + 80, 80, 40, VERDE, VERDE_PRESIONADO, self.pantalla, self.acepta)
-        boton("No", confirm_rect.right - 140, confirm_rect.top + 80, 80, 40, ROJO, ROJO_PRESIONADO, self.pantalla, self.rechazo)
+        self.boton_volver = Boton(image=None, pos=(ANCHO_PANTALLA / 2, 550), text_input="Volver al menú", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
+        self.boton_izq = Boton(image=None, pos=(ANCHO_PANTALLA / 2 - 150, 100), text_input="<", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
+        self.boton_der = Boton(image=None, pos=(ANCHO_PANTALLA / 2 + 150, 100), text_input=">", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
 
     def cambiar_dificultad(self, direccion):
         #-1 para izquierda, 1 para derecha
@@ -80,86 +65,59 @@ class VentanaElegirPartida(VentanaBase):
         dificultad_actual = self.dificultades[self.indice_dificultad]
         return [get_levels_name(dificultad_actual), get_levels_file(dificultad_actual)]
 
-    def iniciar_juego(self, partida_seleccionada):
-        game = partida_seleccionada  # Reinicia el juego
-        self.cambiar_ventana('ventana_nonograma_game', game, self.nombre_nivel_elegido)
-
-    def dibujar(self):
-        self.pantalla.fill(GRIS)
-        mostrar_texto("Elegir Partida", fuente, NEGRO, self.pantalla, 400, 50)
+    def run(self):
+        boton_si, boton_no = None, None
+        while True:
+            self.pantalla.fill(GRIS)
+            menu_mouse_pos = pygame.mouse.get_pos()
 
         # Flechas de navegación de dificultad
         boton("<", 250, 100, 50, 50, GRIS, AZUL_OSCURO, self.pantalla, lambda: self.cambiar_dificultad(-1))
         boton(">", 500, 100, 50, 50, GRIS, AZUL_OSCURO, self.pantalla, lambda: self.cambiar_dificultad(1))
 
-        # Mostrar la dificultad actual
-        dificultad_texto = self.dificultades[self.indice_dificultad].replace("size_", "") + "x" + self.dificultades[self.indice_dificultad].replace("size_", "")
-        mostrar_texto(dificultad_texto, fuente, NEGRO, self.pantalla, 400, 130)
+            for boton in [self.boton_izq, self.boton_der, self.boton_volver]:
+                boton.changeColor(menu_mouse_pos)
+                boton.update(self.pantalla)
 
-        # Botón para volver al menú principal
-        boton("Volver al menú", 300, 500, 200, 60, GRIS, AZUL_OSCURO, self.pantalla, lambda: self.cambiar_ventana('menu_principal'))
+            #mostrar dificultas
+            dificultad_texto = self.dificultades[self.indice_dificultad].replace("size_", "") + "x" + self.dificultades[self.indice_dificultad].replace("size_", "")
+            mostrar_texto(dificultad_texto, fuente, NEGRO, self.pantalla, 400, 100)
 
-        # dibujar una cuadrícula para mostrar niveles
-        niveles_nombres = self.niveles[0]
-        for i, nombre in enumerate(niveles_nombres[:15]):  # Maximo 15 niveles
-            x = 150 + (i % 5) * 100  # Posición en X para cada columna
-            y = 180 + (i // 5) * 100  # Posición en Y para cada fila
-            boton(nombre, x, y, 80, 80, GRIS, AZUL_OSCURO, self.pantalla, lambda n=nombre: self.seleccionar_nivel(n), font=pygame.font.SysFont(None, 20))
-
-
-        if self.confirmando:
-            self.ventana_confirmacion()
-    
-        if self.bandera_search:
-            if self.selectt:
-                print("Se seleccionó un botón")
-                if self.eleccion:
-                    print("Cargando partida con progreso")
-                    for row in range(self.game.board.grid_size):
-                        for col in range(self.game.board.grid_size):
-                            self.game.board.board[row][col].state = int(self.search.avance[row][col])
-                    self.iniciar_juego(self.game)
-                else:
-                    print("No se cargó el progreso")
-                    self.iniciar_juego(self.game)
+            niveles_nombres = self.niveles[0]
+            botones_niveles = []
+            for i, nombre in enumerate(niveles_nombres[:15]):  # Maximo 15 niveles
+                x = 150 + (i % 5) * 100  # Posición en X para cada columna
+                y = 180 + (i // 5) * 100  # Posición en Y para cada fila
+                boton_nivel = Boton(image=None, pos=(x,y), text_input=nombre, font=pygame.font.SysFont(None,24), base_color=GRIS, hover_color=AZUL_OSCURO)
+                boton_nivel.changeColor(menu_mouse_pos)
+                boton_nivel.update(self.pantalla)
+                botones_niveles.append((boton_nivel, nombre))
 
 
-    # def seleccionar_nivel(self, nombre_nivel):
-    #     # Encuentra el archivo correspondiente al nivel seleccionado
-    #     index = self.niveles[0].index(nombre_nivel)
-    #     file_lvl = self.niveles[1][index]
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.boton_izq.checkInput(menu_mouse_pos):
+                        self.cambiar_dificultad(-1)
+                    if self.boton_der.checkInput(menu_mouse_pos):
+                        self.cambiar_dificultad(1)
+                    if self.boton_volver.checkInput(menu_mouse_pos):
+                        return 'menu_principal'
 
-    #     # Cargar los datos del nivel seleccionado
-    #     dificultad_actual = self.dificultades[self.indice_dificultad]
-    #     with open(os.path.join("levels", "base_levels", dificultad_actual, file_lvl)) as file:
-    #         level_data = json.load(file)
+                    for boton, nombre in botones_niveles:
+                        if boton.checkInput(menu_mouse_pos):
+                            return self.seleccionar_nivel(nombre)
 
-    #     # Crear una instancia de Game con los datos del nivel seleccionado
-    #     grid_size = level_data['grid_size']
-    #     matriz_solucion = level_data['diseno']
-    #     self.nombre_nivel_elegido = nombre_nivel
-
-    #     #search level selected
-    #     typelvl = "base" #cambiar cuando se eliga nivel personalizado    
-    #     id= (str(level_data['nivel']) + "_" + str(level_data['grid_size'])+"_"+typelvl) 
-
-    #     self.game = Game(grid_size=grid_size, matriz_solucion=matriz_solucion, identificador=id)
-    #     Bandera_progreso= self.search.Search(id)
-
-    #     if(Bandera_progreso):
-    #         self.iniciar_ventana_confirmacion()
-    #         self.bandera_search = True
-    #     else:
-    #         print("No se encontro el progreso")
-    #         self.iniciar_juego(self.game)
+            pygame.display.update()
 
     def seleccionar_nivel(self, nombre_nivel):
         # Encuentra el archivo correspondiente al nivel seleccionado
         index = self.niveles[0].index(nombre_nivel)
         file_lvl = self.niveles[1][index]
-
-        # Cargar los datos del nivel seleccionado
         dificultad_actual = self.dificultades[self.indice_dificultad]
+
         with open(os.path.join("levels", "base_levels", dificultad_actual, file_lvl)) as file:
             level_data = json.load(file)
 
@@ -168,16 +126,18 @@ class VentanaElegirPartida(VentanaBase):
         matriz_solucion = level_data['diseno']
         self.nombre_nivel_elegido = nombre_nivel
 
-        # Crear el identificador único para el progreso
-        typelvl = "base"  # Cambiar cuando se elija nivel personalizado
-        id = f"{level_data['nivel']}_{grid_size}_{typelvl}"
+        tipo_nivel = "base"
+        id = f"{level_data['nivel']}_{level_data['grid_size']}_{tipo_nivel}"
 
         self.game = Game(grid_size=grid_size, matriz_solucion=matriz_solucion, identificador=id)
-        bandera_progreso = self.search.Search(id)
 
-        if bandera_progreso:
-            self.iniciar_ventana_confirmacion()
+        if self.search.Search(id):
+            self.confirmando = True
             self.bandera_search = True
-        else:
-            print("No se encontró el progreso")
-            self.iniciar_juego(self.game)
+
+        return self.iniciar_juego(self.game)
+
+    def iniciar_juego(self, partida_seleccionada):
+        game = partida_seleccionada  # Reinicia el juego
+        game.running = True
+        return 'ventana_nonograma_game', game, self.nombre_nivel_elegido
