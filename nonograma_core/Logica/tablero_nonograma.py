@@ -120,6 +120,7 @@ class Game:
         self.stack_redo = Stack()
         self.identificador = identificador
         self.mostrar_solucion = False  # Atributo para alternar entre solución y estado actual
+        self.ayudas = 3
 
     def draw_text(self, text, position):
         text_surface = self.font.render(text, True, (255, 0, 0))
@@ -166,7 +167,6 @@ class Game:
         if self.running:
             self.handle_events(events, (x, y))
             main_window.blit(self.surface, (x, y))
-        print(self.won)
         if self.won:
             return True
         return False
@@ -198,56 +198,70 @@ class Game:
             else:
                 self.won = False
         
+    # def help(self):
+    #     matriz_diferencias = [[0 for _ in range(self.board.grid_size)] for _ in range(self.board.grid_size)]
+    #     for j in range(self.board.grid_size):
+    #         for i in range(self.board.grid_size):
+    #             matriz_diferencias[i][j] = [self.board.matriz_solucion[i][j] - self.board.board[i][j].clicked]
+
+    #     for j in range(self.board.grid_size):
+    #         for i in range(self.board.grid_size):
+    #             neighbors = [(i-1, j), (i+1, j), (i, j-1), (i, j+1)]
+    #             valid_neighbors = [(x, y) for x, y in neighbors if 0 <= x < self.board.grid_size and 0 <= y < self.board.grid_size]
+    #     valid_positions = []
+    #     for instancia in valid_neighbors:
+    #         x, y = instancia
+    #         if matriz_diferencias[x][y] != 0:
+    #             valid_positions.append(instancia)
+
+    #     if valid_positions:
+    #         instancia_rand = random.choice(valid_positions)
+    #         x, y = instancia_rand
+    #         self.board.board[x][y].click()
+    #     else:
+    #         valid_positions = [(i, j) for i in range(self.board.grid_size) for j in range(self.board.grid_size) if matriz_diferencias[i][j] != 0]
+    #         if valid_positions:
+    #             instancia_rand = random.choice(valid_positions)
+    #             x, y = instancia_rand
+    #             self.board.board[x][y].click()
+    #         else:
+    #             print("Ya ganaste")
+
     def help(self):
-        matriz_diferencias = [[0 for _ in range(self.board.grid_size)] for _ in range(self.board.grid_size)]
-        for j in range(self.board.grid_size):
-            for i in range(self.board.grid_size):
-                matriz_diferencias[i][j] = [self.board.matriz_solucion[i][j] - self.board.board[i][j].clicked]
+        matriz_actual = self.board.get_matriz_actual()
+        matriz_solucion = self.board.matriz_solucion
 
-        for j in range(self.board.grid_size):
-            for i in range(self.board.grid_size):
-                neighbors = [(i-1, j), (i+1, j), (i, j-1), (i, j+1)]
-                valid_neighbors = [(x, y) for x, y in neighbors if 0 <= x < self.board.grid_size and 0 <= y < self.board.grid_size]
-        valid_positions = []
-        for instancia in valid_neighbors:
-            x, y = instancia
-            if matriz_diferencias[x][y] != 0:
-                valid_positions.append(instancia)
+        # Buscar casillas que están cerca de las ya seleccionadas y que pertenecen a la solución
+        posibles_casillas = []
 
-        if valid_positions:
-            instancia_rand = random.choice(valid_positions)
-            x, y = instancia_rand
+        for i in range(self.grid_size):
+            for j in range(self.grid_size):
+                if matriz_actual[i][j] == 1:  # Casilla ya seleccionada por el jugador
+                    # Buscar vecinos válidos
+                    vecinos = [ (i-1, j), (i+1, j), (i, j-1), (i, j+1)]
+                    for x, y in vecinos:
+                        if (0 <= x < self.grid_size and 0 <= y < self.grid_size and matriz_actual[x][y] == 0 and matriz_solucion[x][y] == 1):
+                            posibles_casillas.append((x, y))
+
+        # Si hay casillas candidatas, elegir una aleatoria
+        if posibles_casillas:
+            x, y = random.choice(posibles_casillas)
             self.board.board[x][y].click()
         else:
-            valid_positions = [(i, j) for i in range(self.board.grid_size) for j in range(self.board.grid_size) if matriz_diferencias[i][j] != 0]
-            if valid_positions:
-                instancia_rand = random.choice(valid_positions)
-                x, y = instancia_rand
+            # Si no hay vecinos cercanos válidos, buscar cualquier casilla no seleccionada de la solución
+            for i in range(self.grid_size):
+                for j in range(self.grid_size):
+                    if matriz_actual[i][j] == 0 and matriz_solucion[i][j] == 1:
+                        posibles_casillas.append((i, j))
+
+            if posibles_casillas:
+                x, y = random.choice(posibles_casillas)
                 self.board.board[x][y].click()
             else:
-                print("Ya ganaste")
+                self.won = True
+        
+        if self.board.get_matriz_actual() == matriz_solucion:
+            self.won = True
+        else:
+            self.ayudas = self.ayudas - 1
 
-# def main():
-#     pygame.init()
-#     main_window_size = (600, 600)
-#     main_window = pygame.display.set_mode(main_window_size)
-#     pygame.display.set_caption("Main Window")
-#     clock = pygame.time.Clock()
-#     game = Game()
-#     game_position = (150, 150)  # Position of the game within the main window
-
-#     running = True
-#     while running:
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 running = False
-
-#         main_window.fill((200, 200, 200))  # Fill the main window with a background color
-#         game.run(main_window, *game_position)
-#         pygame.display.flip()
-#         clock.tick(60)
-
-#     pygame.quit()
-
-# if __name__ == "__main__":
-#     main()

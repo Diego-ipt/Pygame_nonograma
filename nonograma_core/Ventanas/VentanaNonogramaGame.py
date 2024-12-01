@@ -18,20 +18,29 @@ class VentanaNonogramaGame(VentanaBase):
         self.nombre_nivel = nombre_nivel
         self.running = True
         self.registro = Guardado(nombre_nivel, game, game.identificador)
-        self.mostrar_mensaje = False  # Controla si se debe mostrar el mensaje
-        self.tiempo_mensaje = 0       # Registra el tiempo para mostrar el mensaje
+        self.mostrar_mensaje_progreso = False  # Controla si se debe mostrar el mensaje
+        self.tiempo_mensaje_progreso = 0       # Registra el tiempo para mostrar el mensaje
+        self.mostrar_mensaje_ayudas = False
+        self.tiempo_mensaje_ayudas = 0  
 
     def guardar_progreso(self):
         try:
             self.registro.Save_progress()
-            self.mostrar_mensaje = True
-            self.tiempo_mensaje = time.time()
+            self.mostrar_mensaje_progreso = True
+            self.tiempo_mensaje_progreso = time.time()
         except Exception as e:
             print(f"Error al guardar el progreso: {e}")
 
     def victoria(self):
         self.game.running = False
         self.cambiar_ventana('ventana_victoria')
+
+    def ayudas(self):
+        if self.game.ayudas == 0:
+            self.mostrar_mensaje_ayudas = True
+            self.tiempo_mensaje_ayudas = time.time()
+        else:
+            self.game.help()
 
     # En el bucle principal del juego
     def dibujar(self):
@@ -76,14 +85,21 @@ class VentanaNonogramaGame(VentanaBase):
         boton("Rehacer", 500, 260, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.rehacer, font=pygame.font.SysFont(None, 34))
         boton("Guardar", 500, 340, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.guardar_progreso, font=pygame.font.SysFont(None, 34))
         boton("Mostrar solución", 500, 420, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.toggle_mostrar_solucion, font=pygame.font.SysFont(None, 34))
-        boton("Ayuda", 500, 500, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.game.help, font=pygame.font.SysFont(None, 34))
+        texto_ayuda = f"Ayuda ({self.game.ayudas})"
+        boton(texto_ayuda, 500, 500, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.ayudas, font=pygame.font.SysFont(None, 34))
 
         # Mostrar el mensaje de confirmación si está activo
-        if self.mostrar_mensaje:
-            mostrar_texto("Progreso guardado", pygame.font.SysFont(None, 34), VERDE, pantalla, 300, 550)
+        if self.mostrar_mensaje_progreso:
+            mostrar_texto("Progreso guardado", pygame.font.SysFont(None, 34), VERDE, pantalla, 270, 480)
             # Desactiva el mensaje después de 2 segundos
-            if time.time() - self.tiempo_mensaje > 2:
-                self.mostrar_mensaje = False
+            if time.time() - self.tiempo_mensaje_progreso > 2:
+                self.mostrar_mensaje_progreso = False
+
+        if self.mostrar_mensaje_ayudas:
+            mostrar_texto("No tienes más ayudas", pygame.font.SysFont(None, 34), NEGRO, pantalla, 270, 530)
+            # Desactiva el mensaje después de 2 segundos
+            if time.time() - self.tiempo_mensaje_ayudas > 2:
+                self.mostrar_mensaje_ayudas = False
 
         if self.game.run(pantalla, *game_position, pygame.event.get()):
             boton("Terminar", 200, 500, 200, 60, GRIS, AZUL_OSCURO, pantalla, self.victoria)
