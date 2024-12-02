@@ -49,12 +49,13 @@ class VentanaNonogramaGame(VentanaBase):
             texto_nivel = f"Nivel {self.nombre_nivel}"
             mostrar_texto(texto_nivel, NEGRO, self.pantalla, 110, 40, fuente=pygame.font.SysFont(None, 35))
             menu_mouse_pos = pygame.mouse.get_pos()
+            eventos = pygame.event.get()
 
             for boton in [self.boton_volver, self.boton_deshacer, self.boton_rehacer, self.boton_guardar]:
                 boton.changeColor(menu_mouse_pos)
                 boton.update(self.pantalla)
 
-            for evento in pygame.event.get():
+            for evento in eventos:
                 if evento.type == pygame.QUIT:
                     pygame.quit()
                     exit()
@@ -122,7 +123,7 @@ class VentanaNonogramaGame(VentanaBase):
                 self.mostrar_mensaje_ayudas = False
 
             # Correr lógica del juego
-            if self.game.run(self.pantalla, *game_position, pygame.event.get()):
+            if self.game.run(self.pantalla, *game_position, eventos):
                 self.running = False
                 return 'ventana_victoria'
 

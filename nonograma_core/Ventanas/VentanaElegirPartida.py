@@ -89,7 +89,7 @@ class VentanaElegirPartida(VentanaBase):
 
                         if self.boton_no.checkInput(menu_mouse_pos):
                             self.popup_guardado.desactivar()
-                            return 'elegir_partida'
+                            return self.iniciar_juego(self.game)
             else:
                 for boton in [self.boton_izq, self.boton_der, self.boton_volver]:
                     boton.changeColor(menu_mouse_pos)

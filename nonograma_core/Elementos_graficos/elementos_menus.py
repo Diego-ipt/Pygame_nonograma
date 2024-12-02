@@ -49,7 +49,7 @@ class Boton:
             self.curr_color = self.base_color
 
 class PopUp:
-    def __init__(self, pos, size, message, font, base_color, text_color, border_radius=10):
+    def __init__(self, pos, size, message, font, base_color, text_color, border_radius=10, padding=20):
         self.x_pos, self.y_pos = pos
         self.width, self.height = size
         self.message = message
@@ -57,6 +57,7 @@ class PopUp:
         self.base_color = base_color
         self.text_color = text_color
         self.border_radius = border_radius
+        self.padding = padding
         self.text = self.font.render(self.message, True, self.text_color)
         self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos - size[1] // 4))  # Texto en la parte superior
         self.rect = pygame.Rect(
@@ -65,6 +66,31 @@ class PopUp:
         self.is_active = False
         self.buttons = []
 
+        self.lines = self._wrap_text()
+
+    def _wrap_text(self):
+        words = self.message.split(' ')
+        lines = []
+        current_line = ""
+
+        for word in words:
+            # Prueba añadir la palabra a la línea actual
+            test_line = f"{current_line} {word}".strip()
+            line_width, _ = self.font.size(test_line)
+
+            if line_width + self.padding * 2 <= self.width:
+                current_line = test_line
+            else:
+                # La línea actual está llena; agrega y empieza una nueva
+                lines.append(current_line)
+                current_line = word
+
+        # Agrega la última línea si hay texto
+        if current_line:
+            lines.append(current_line)
+
+        return lines
+
     def add_button(self, button):
         self.buttons.append(button)
         self.arrange_buttons()
@@ -72,8 +98,16 @@ class PopUp:
     def update(self, screen):
 
         pygame.draw.rect(screen, self.base_color, self.rect, border_radius=self.border_radius)
-        screen.blit(self.text, self.text_rect)
 
+        line_height = self.font.size("Tg")[1]  # Altura de una línea de texto
+        start_y = self.rect.top + self.padding
+
+        for i, line in enumerate(self.lines):
+            line_surface = self.font.render(line, True, self.text_color)
+            line_rect = line_surface.get_rect(center=(self.x_pos, start_y + i * line_height))
+            screen.blit(line_surface, line_rect)
+
+        # Dibujar los botones
         for button in self.buttons:
             button.update(screen)
 
