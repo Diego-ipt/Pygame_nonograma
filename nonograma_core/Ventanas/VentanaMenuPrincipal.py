@@ -3,24 +3,13 @@ import sys
 import random
 
 from nonograma_core.Elementos_graficos.AssetManager import AssetManager
-from nonograma_core.Elementos_graficos.elementos_menus import Boton
+from nonograma_core.Elementos_graficos.elementos_menus import Boton, mostrar_fotogramas
 from nonograma_core.Ventanas.VentanaBase import VentanaBase
 from nonograma_core.Elementos_graficos.colores import *
 from nonograma_core.JuegoNonograma import ANCHO_PANTALLA
 
 
 #Funciones para dibujar el fondo del menu
-def mostrar_fotogramas(fotogramas, indice_fotograma, contador, retraso, x, y, pantalla):
-    if len(fotogramas) > 0:
-        if contador >= retraso:
-            indice_fotograma = (indice_fotograma + 1) % len(fotogramas)
-            contador = 0
-        pantalla.blit(fotogramas[indice_fotograma], (x, y))
-        contador += 1
-        return indice_fotograma, contador
-    else:
-        print("Error: No se han cargado los fotogramas")
-        return indice_fotograma, contador
 
 
 def dibujar_grid(pantalla, filas, columnas, tamano_celda, color_activo, color_inactivo, grid_estado):
@@ -63,7 +52,7 @@ class VentanaMenuPrincipal(VentanaBase):
             actualizar_grid(self.grid_estado)
             self.pantalla.fill(BLANCO)
             dibujar_grid(self.pantalla, 50, 50, 16, NEGRO, BLANCO_MENU, self.grid_estado)
-            self.indice_fotograma_menu, self.contador_fotogramas = mostrar_fotogramas(self.menu, self.indice_fotograma_menu, self.contador_fotogramas, self.retraso_fotogramas,75, 0, self.pantalla)
+            self.indice_fotograma_menu, self.contador_fotogramas = mostrar_fotogramas(self.menu, self.indice_fotograma_menu, self.contador_fotogramas, self.retraso_fotogramas, 75, 0, self.pantalla)
 
             menu_mouse_pos = pygame.mouse.get_pos()
 
