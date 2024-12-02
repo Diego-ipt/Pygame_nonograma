@@ -3,6 +3,7 @@ from nonograma_core.Elementos_graficos.colores import *
 from nonograma_core.Logica.queueYStack import *
 from enum import Enum
 import random
+
 #default
 class SettingsManager(Enum):
     GRID_SIZE = 10
