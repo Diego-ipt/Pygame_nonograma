@@ -82,7 +82,7 @@ class PopUp:
             return
 
         total_width = sum(button.rect.width for button in self.buttons) + 20 * (len(self.buttons) - 1)
-        start_x = self.x_pos - total_width // 2
+        start_x = self.x_pos - total_width // 2 - 20
         y_pos = self.y_pos + self.height // 4
 
         for button in self.buttons:
@@ -94,7 +94,7 @@ class PopUp:
                 button.text_rect.width + 2 * button.rect_padding[0],
                 button.text_rect.height + 2 * button.rect_padding[1]
             )
-            start_x += button.rect.width + 20
+            start_x += button.rect.width + 60
 
     def activar(self):
         self.is_active = True

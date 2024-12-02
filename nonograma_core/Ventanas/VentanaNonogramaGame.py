@@ -23,7 +23,6 @@ class VentanaNonogramaGame(VentanaBase):
             pygame.display.set_caption("Nonograma Game")
             texto_nivel = f"Nivel {self.nombre_nivel}"
             mostrar_texto(texto_nivel, NEGRO, self.pantalla, 110, 40, fuente=pygame.font.SysFont(None, 35))
-
             menu_mouse_pos = pygame.mouse.get_pos()
 
             for boton in [self.boton_volver, self.boton_deshacer, self.boton_rehacer, self.boton_guardar]:
