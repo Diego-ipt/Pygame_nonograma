@@ -11,11 +11,17 @@ class VentanaNonogramaGame(VentanaBase):
         self.nombre_nivel = nombre_nivel
         self.running = True
         self.registro = Guardado(nombre_nivel, game, game.identificador)
+        self.registro = Guardado(nombre_nivel, game, game.identificador)
         self.mostrar_mensaje_progreso = False  # Controla si se debe mostrar el mensaje
         self.tiempo_mensaje_progreso = 0       # Registra el tiempo para mostrar el mensaje
         self.mostrar_mensaje_ayudas = False
         self.tiempo_mensaje_ayudas = 0
-
+        
+        self.boton_volver = Boton(image=None, pos=(600, 100), text_input="Volver al menu",font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
+        self.boton_deshacer = Boton(image=None, pos=(600, 200), text_input="Deshacer", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
+        self.boton_rehacer = Boton(image=None, pos=(600, 300), text_input="Rehacer", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
+        self.boton_guardar = Boton(image=None, pos=(600, 400), text_input="Guardar", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
+        
     def guardar_progreso(self):
         try:
             self.registro.Save_progress()
@@ -36,12 +42,7 @@ class VentanaNonogramaGame(VentanaBase):
             self.game.help()
 
 
-
-        self.boton_volver = Boton(image=None, pos=(600, 100), text_input="Volver al menu",font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
-        self.boton_deshacer = Boton(image=None, pos=(600, 200), text_input="Deshacer", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
-        self.boton_rehacer = Boton(image=None, pos=(600, 300), text_input="Rehacer", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
-        self.boton_guardar = Boton(image=None, pos=(600, 400), text_input="Guardar", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
-
+        
     def run(self):
         while True:
             self.pantalla.fill(ROJO)
