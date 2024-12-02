@@ -2,7 +2,7 @@ import sys
 import pygame
 from nonograma_core.Ventanas.VentanaBase import VentanaBase
 from nonograma_core.Logica.creador import CreatorWindow
-from nonograma_core.Elementos_graficos.elementos_menus import Boton, PopUp
+from nonograma_core.Elementos_graficos.elementos_menus import *
 from nonograma_core.Elementos_graficos.colores import *
 
 class VentanaCrearNonograma(VentanaBase):
@@ -25,7 +25,9 @@ class VentanaCrearNonograma(VentanaBase):
 
     def run(self):
         while True:
-            self.pantalla.fill(VERDE)
+            actualizar_grid_fondo_menu(0.00005)
+            self.pantalla.fill(BLANCO)
+            dibujar_grid_fondo_menu(self.pantalla, 50, 50, 16, VERDE_PRESIONADO, BLANCO)
             pygame.display.set_caption("Nonograma Creador")
             mouse_pos = pygame.mouse.get_pos()
             eventos = pygame.event.get()

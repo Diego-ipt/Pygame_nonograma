@@ -151,7 +151,6 @@ class PopUp:
     def desactivar(self):
         self.is_active = False
 
-
 def mostrar_fotogramas(fotogramas, indice_fotograma, contador, retraso, x, y, pantalla):
     if len(fotogramas) > 0:
         if contador >= retraso:
@@ -182,14 +181,8 @@ def dibujar_grid_fondo_menu(pantalla, filas, columnas, tamano_celda, color_activ
             pantalla.blit(celda_surface, (x, y))
 
 
-def actualizar_grid_fondo_menu():
-    probabilidad_prenderse = 0.0001
-    probabilidad_apagarse = 0.0002
+def actualizar_grid_fondo_menu(probabilidad=0.0001):
     for fila in range(len(GRID_ESTADO_FONDO_MENU)):
         for columna in range(len(GRID_ESTADO_FONDO_MENU[0])):
-            if GRID_ESTADO_FONDO_MENU[fila][columna]:
-                if random.random() < probabilidad_apagarse:
-                    GRID_ESTADO_FONDO_MENU[fila][columna] = False
-            else:
-                if random.random() < probabilidad_prenderse:
-                    GRID_ESTADO_FONDO_MENU[fila][columna] = True
+            if random.random() < probabilidad:
+                GRID_ESTADO_FONDO_MENU[fila][columna] = not GRID_ESTADO_FONDO_MENU[fila][columna]
