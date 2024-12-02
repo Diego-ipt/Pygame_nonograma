@@ -126,5 +126,6 @@ class VentanaNonogramaGame(VentanaBase):
 
             pygame.display.flip()  # Actualizar pantalla en cada iteración
 
+        pygame.display.flip()
         time.sleep(1)
         return 'ventana_victoria'

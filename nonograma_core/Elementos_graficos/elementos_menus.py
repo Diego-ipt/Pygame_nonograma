@@ -48,6 +48,11 @@ class Boton:
         else:
             self.curr_color = self.base_color
 
+    def changeText(self, text):
+        self.text_input = text
+        self.text = self.font.render(str(self.text_input), True, "black")
+        self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
+
 class PopUp:
     def __init__(self, pos, size, message, font, base_color, text_color, border_radius=10, padding=20):
         self.x_pos, self.y_pos = pos
