@@ -28,11 +28,11 @@ class Cell:
 
     def click(self):
         if self.state != 2:  # Solo permite clic si no está marcada con bandera
-            self.state = 1 if self.state == 0 else 0
+            self.state = 1
 
     def toggle_flag(self):
         if self.state != 1:  # Solo permite bandera si no está clickeada
-            self.state = 2 if self.state == 0 else 0
+            self.state = 2
 
     def get_color(self):
         if self.state == 2: # Bandera
