@@ -122,7 +122,7 @@ class VentanaNonogramaGame(VentanaBase):
 
             # Mostrar el mensaje de confirmación si está activo
             if self.mostrar_mensaje_progreso:
-                mostrar_texto("Progreso guardado", VERDE, self.pantalla, 270, 480)
+                mostrar_texto("Progreso guardado", VERDE_PRESIONADO, self.pantalla, 270, 480)
                 # Desactiva el mensaje después de 2 segundos
                 if time.time() - self.tiempo_mensaje_progreso > 2:
                     self.mostrar_mensaje_progreso = False
