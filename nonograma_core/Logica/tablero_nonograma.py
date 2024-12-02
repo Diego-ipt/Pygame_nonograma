@@ -85,18 +85,53 @@ class Board:
         return [[1 if cell.state == 1 else 0 for cell in row] for row in self.board]
 
 
+    # def handle_click(self, pos):
+    #     row = int(pos[1] // self.cell_size)
+    #     col = int(pos[0] // self.cell_size)
+    #     if 0 <= row < self.grid_size and 0 <= col < self.grid_size:
+    #         previous_state = self.board[row][col].state
+    #         self.board[row][col].click()
+    #         # matriz = self.get_matrix()
+
+    #         # for fila in matriz:
+    #         #     print(fila)
+    #         # print("\n")
+    #         return (row, col, previous_state, self.board[row][col].state)
+
+    # def handle_flag(self, pos):
+    #     row = int(pos[1] // self.cell_size)
+    #     col = int(pos[0] // self.cell_size)
+    #     if 0 <= row < self.grid_size and 0 <= col < self.grid_size:
+    #         previous_state = self.board[row][col].state
+    #         self.board[row][col].toggle_flag()
+
+    #         # matriz = self.get_matrix()
+
+    #         # for fila in matriz:
+    #         #     print(fila)
+    #         # print("\n")
+    #         return (row, col, previous_state, self.board[row][col].state)
+    
     def handle_click(self, pos):
         row = int(pos[1] // self.cell_size)
         col = int(pos[0] // self.cell_size)
         if 0 <= row < self.grid_size and 0 <= col < self.grid_size:
             previous_state = self.board[row][col].state
             self.board[row][col].click()
-            # matriz = self.get_matrix()
 
-            # for fila in matriz:
-            #     print(fila)
-            # print("\n")
-            return (row, col, previous_state, self.board[row][col].state)
+            # Verificar si el clic es correcto
+            es_correcto = (self.matriz_solucion[row][col] == 1 and self.board[row][col].state == 1) or \
+                        (self.matriz_solucion[row][col] == 0 and self.board[row][col].state == 0)
+
+            if not es_correcto:
+                # Corrige el estado al correcto y retorna que hubo un error
+                if self.matriz_solucion[row][col] == 1:
+                    self.board[row][col].state = 1  # Debió ser negra
+                else:
+                    self.board[row][col].state = 2  # Debió ser bandera (X)
+                return (row, col, previous_state, self.board[row][col].state, False)
+
+            return (row, col, previous_state, self.board[row][col].state, True)
 
     def handle_flag(self, pos):
         row = int(pos[1] // self.cell_size)
@@ -105,12 +140,19 @@ class Board:
             previous_state = self.board[row][col].state
             self.board[row][col].toggle_flag()
 
-            # matriz = self.get_matrix()
+            # Verificar si la bandera es correcta
+            es_correcto = self.matriz_solucion[row][col] == 0 and self.board[row][col].state == 2
 
-            # for fila in matriz:
-            #     print(fila)
-            # print("\n")
-            return (row, col, previous_state, self.board[row][col].state)
+            if not es_correcto:
+                # Corrige el estado al correcto y retorna que hubo un error
+                if self.matriz_solucion[row][col] == 1:
+                    self.board[row][col].state = 1  # Debió ser negra
+                else:
+                    self.board[row][col].state = 0  # Debió ser blanca
+                return (row, col, previous_state, self.board[row][col].state, False)
+
+            return (row, col, previous_state, self.board[row][col].state, True)
+
 
 
 class Game:
@@ -130,6 +172,7 @@ class Game:
         self.identificador = identificador
         self.mostrar_solucion = False  # Atributo para alternar entre solución y estado actual
         self.ayudas = 3
+        self.vidas = 3
 
     def draw_text(self, text, position):
         text_surface = self.font.render(text, True, (255, 0, 0))
@@ -145,6 +188,30 @@ class Game:
             else:
                 self.won = False
 
+    # def handle_events(self, events, offset):
+    #     for event in events:
+    #         if event.type == pygame.QUIT:
+    #             self.running = False
+    #         elif event.type == pygame.MOUSEBUTTONDOWN:
+    #             pos = (event.pos[0] - offset[0], event.pos[1] - offset[1])
+    #             if 0 <= pos[0] < self.window_size and 0 <= pos[1] < self.window_size:
+    #                 if event.button == 1:  # Click izquierdo
+    #                     change = self.board.handle_click(pos)
+    #                     if change:
+    #                         self.stack.push(change)
+    #                         if self.board.get_matriz_actual() == self.board.matriz_solucion:
+    #                             self.won = True
+    #                         else:
+    #                             self.won = False
+    #                 elif event.button == 3:  # Click derecho
+    #                     change = self.board.handle_flag(pos)
+    #                     if change:
+    #                         self.stack.push(change)
+    #                         if self.board.get_matriz_actual() == self.board.matriz_solucion:
+    #                             self.won = True
+    #                         else:
+    #                             self.won = False
+        
     def handle_events(self, events, offset):
         for event in events:
             if event.type == pygame.QUIT:
@@ -155,25 +222,29 @@ class Game:
                     if event.button == 1:  # Click izquierdo
                         change = self.board.handle_click(pos)
                         if change:
-                            self.stack.push(change)
-                            if self.board.get_matriz_actual() == self.board.matriz_solucion:
-                                self.won = True
-                            else:
-                                self.won = False
-                    elif event.button == 3:  # Click derecho
+                            row, col, prev_state, new_state, es_correcto = change
+                            self.stack.push((row, col, prev_state, new_state))
+                            if not es_correcto:  # Si fue incorrecto
+                                self.vidas -= 1
+                            
+                            self.won = self.board.get_matriz_actual() == self.board.matriz_solucion
+  
+                    elif event.button == 3:  # Click derecho (bandera)
                         change = self.board.handle_flag(pos)
                         if change:
-                            self.stack.push(change)
-                            if self.board.get_matriz_actual() == self.board.matriz_solucion:
-                                self.won = True
-                            else:
-                                self.won = False
+                            row, col, prev_state, new_state, es_correcto = change
+                            self.stack.push((row, col, prev_state, new_state))
+                            if not es_correcto:  # Si fue incorrecto
+                                self.vidas -= 1
+                            self.won = self.board.get_matriz_actual() == self.board.matriz_solucion
+
 
     def reset(self):
         self.board.reset()
         self.won = False
         self.stack.clear()
         self.stack_redo.clear()
+        self.vidas = 3
         # print("Tablero reiniciado")
         # for row in self.board.get_matrix():
         #     print(row)

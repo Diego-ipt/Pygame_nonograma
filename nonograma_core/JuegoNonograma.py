@@ -22,13 +22,16 @@ def main():
     from nonograma_core.Ventanas.VentanaElegirPartida import VentanaElegirPartida
     from nonograma_core.Ventanas.VentanaCrearNonograma import VentanaCrearNonograma
     from nonograma_core.Ventanas.VentanaNonogramaGame import VentanaNonogramaGame
+    from nonograma_core.Ventanas.VentanaDerrota import VentanaDerrota
+
 
     ventanas = {
         'menu_principal': VentanaMenuPrincipal(PANTALLA),
         'elegir_partida': VentanaElegirPartida(PANTALLA),
         'ventana_nonograma_game': None, #Sera instanciada dinamicamente para cargar aprtidas
         'crear_nonograma': VentanaCrearNonograma(PANTALLA),
-        'ventana_victoria': None
+        'ventana_victoria': None,
+        'ventana_derrota': VentanaDerrota(PANTALLA)
     }
 
     estado_actual = 'menu_principal'

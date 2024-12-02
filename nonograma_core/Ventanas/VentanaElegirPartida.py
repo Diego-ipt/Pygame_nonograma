@@ -56,8 +56,8 @@ class VentanaElegirPartida(VentanaBase):
         self.boton_niveles_actuales = self.boton_niveles_personalizados
 
         #Popup de confirmacion
-        self.popup_guardado = PopUp(pos=(400, 300), size=(300, 150), message="Se ha encontrado una partida en progreso, quieres cargar?", font=pygame.font.SysFont(None, 36), base_color=NEGRO, text_color=BLANCO)
-        self.boton_si = Boton(image=None, pos=(ANCHO_PANTALLA / 2 - 150, 100), text_input="Si", font=pygame.font.SysFont(None, 36), base_color=VERDE, hover_color=VERDE_PRESIONADO)
+        self.popup_guardado = PopUp(pos=(400, 300), size=(300, 150), message="Se ha encontrado una partida en progreso, ¿quieres cargar?", font=pygame.font.SysFont(None, 36), base_color=NEGRO, text_color=BLANCO)
+        self.boton_si = Boton(image=None, pos=(ANCHO_PANTALLA / 2 - 150, 100), text_input="Sí", font=pygame.font.SysFont(None, 36), base_color=VERDE, hover_color=VERDE_PRESIONADO)
         self.boton_no = Boton(image=None, pos=(ANCHO_PANTALLA / 2 - 150, 100), text_input="No", font=pygame.font.SysFont(None, 36), base_color=ROJO, hover_color=ROJO_PRESIONADO)
         self.popup_guardado.add_button(self.boton_si)
         self.popup_guardado.add_button(self.boton_no)

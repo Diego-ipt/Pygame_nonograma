@@ -19,12 +19,12 @@ class VentanaNonogramaGame(VentanaBase):
         self.mostrar_mensaje_ayudas = False
         self.tiempo_mensaje_ayudas = 0
         
-        self.boton_volver = Boton(image=None, pos=(600, 100), text_input="Volver al menu",font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
+        self.boton_volver = Boton(image=None, pos=(600, 100), text_input="Volver al menú",font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
         self.boton_deshacer = Boton(image=None, pos=(600, 180), text_input="Deshacer", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
         self.boton_rehacer = Boton(image=None, pos=(600, 260), text_input="Rehacer", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
         self.boton_guardar = Boton(image=None, pos=(600, 340), text_input="Guardar", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
         self.boton_ayuda = Boton(image=None, pos=(600, 420), text_input=f"Ayuda ({self.game.ayudas})", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
-        self.boton_mostrar_solucion = Boton(image=None, pos=(600, 500), text_input="Mostrar solucion", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
+        self.boton_mostrar_solucion = Boton(image=None, pos=(600, 500), text_input="Mostrar solución", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
         self.boton_reiniciar = Boton(image=None, pos=(600, 580), text_input="Reiniciar nivel", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
 
     def guardar_progreso(self):
@@ -48,10 +48,21 @@ class VentanaNonogramaGame(VentanaBase):
             pygame.display.set_caption("Nonograma Game")
             texto_nivel = f"Nivel {self.nombre_nivel}"
             mostrar_texto(texto_nivel, NEGRO, self.pantalla, 110, 40, fuente=pygame.font.SysFont(None, 35))
+
+            #boton con texto dinamico
+            boton_ayuda = Boton(image=None, pos=(600, 420), text_input=f"Ayuda ({self.game.ayudas})", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
+
+            texto_vidas = f"Vidas: {self.game.vidas}"
+            mostrar_texto(texto_vidas, AMARILLO, self.pantalla, 75, 75, fuente=pygame.font.SysFont(None, 28))
+
+            if self.game.vidas == 0:
+                self.running = False
+                return 'ventana_derrota'
+            
             menu_mouse_pos = pygame.mouse.get_pos()
             eventos = pygame.event.get()
 
-            for boton in [self.boton_volver, self.boton_deshacer, self.boton_rehacer, self.boton_guardar, self.boton_ayuda, self.boton_mostrar_solucion, self.boton_reiniciar]:
+            for boton in [self.boton_volver, self.boton_deshacer, self.boton_rehacer, self.boton_guardar, boton_ayuda, self.boton_mostrar_solucion, self.boton_reiniciar]:
                 boton.changeColor(menu_mouse_pos)
                 boton.update(self.pantalla)
 
@@ -68,9 +79,10 @@ class VentanaNonogramaGame(VentanaBase):
                     if self.boton_rehacer.checkInput(menu_mouse_pos):
                         self.game.rehacer()
                     if self.boton_guardar.checkInput(menu_mouse_pos):
-                        self.registro.Save_progress()
-                    if self.boton_ayuda.checkInput(menu_mouse_pos):
+                        self.guardar_progreso()
+                    if boton_ayuda.checkInput(menu_mouse_pos):
                         self.ayudas()
+                        boton_ayuda.changeText(f"Ayuda ({self.game.ayudas})")
                     if self.boton_mostrar_solucion.checkInput(menu_mouse_pos):
                         self.game.toggle_mostrar_solucion()
                     if self.boton_reiniciar.checkInput(menu_mouse_pos):
@@ -116,8 +128,8 @@ class VentanaNonogramaGame(VentanaBase):
             if self.mostrar_mensaje_ayudas:
                 mostrar_texto("No tienes más ayudas", NEGRO, self.pantalla, 270, 530)
                 # Desactiva el mensaje después de 2 segundos
-            if time.time() - self.tiempo_mensaje_ayudas > 2:
-                self.mostrar_mensaje_ayudas = False
+                if time.time() - self.tiempo_mensaje_ayudas > 2:
+                    self.mostrar_mensaje_ayudas = False
 
             # Correr lógica del juego
             if self.game.run(self.pantalla, *game_position, eventos):
