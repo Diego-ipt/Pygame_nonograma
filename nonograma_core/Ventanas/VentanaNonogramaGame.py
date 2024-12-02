@@ -44,7 +44,9 @@ class VentanaNonogramaGame(VentanaBase):
         
     def run(self):
         while self.running:
-            self.pantalla.fill(ROJO)
+            actualizar_grid_fondo_menu()
+            self.pantalla.fill(BLANCO)
+            dibujar_grid_fondo_menu(self.pantalla, 50, 50, 16, ROJO, BLANCO)
             pygame.display.set_caption("Nonograma Game")
             texto_nivel = f"Nivel {self.nombre_nivel}"
             mostrar_texto(texto_nivel, NEGRO, self.pantalla, 110, 40, fuente=pygame.font.SysFont(None, 35))

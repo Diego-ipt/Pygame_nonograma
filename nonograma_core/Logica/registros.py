@@ -7,7 +7,7 @@ class Guardado:
         self.nombre_nivel = nombre_nivel
         self.game = game
         self.identificador = identificador
-    
+
     def Save_progress(self):
         # Ruta base calculada en función del archivo actual
         base_dir = os.path.join("levels", "Registros")
@@ -26,8 +26,10 @@ class Guardado:
             "avance": self.game.board.get_matrix(),  # Call the method to get the matrix
         }
 
+
         with open(file_path, 'w') as file:
             json.dump(nivel_info, file)
+            print(f"Progreso guardado en {file_path}")
 
 
 class Search_progress():

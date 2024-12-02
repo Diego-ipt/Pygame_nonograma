@@ -63,6 +63,12 @@ class VentanaElegirPartida(VentanaBase):
         self.popup_guardado.add_button(self.boton_no)
         self.popup_guardado.desactivar()
 
+        #Borrar niveles personalizados
+        self.boton_borrar_nivel = Boton(image=None, pos=(700, 100), text_input="Borrar Niveles", font=pygame.font.SysFont(None, 30), base_color=ROJO, hover_color=ROJO_PRESIONADO)
+        self.boton_cancelar_borrar = Boton(image=None, pos=(700, 100), text_input="Cancelar", font=pygame.font.SysFont(None, 30), base_color=AZUL, hover_color=AZUL_CLARO)
+        self.boton_borrar_seleccionado = self.boton_borrar_nivel
+        self.modo_borrar = False
+
     def cambiar_dificultad(self, direccion):
         #-1 para izquierda, 1 para derecha
         self.indice_dificultad = (self.indice_dificultad + direccion) % len(self.dificultades)
@@ -84,6 +90,14 @@ class VentanaElegirPartida(VentanaBase):
         else:
             self.boton_niveles_actuales = self.boton_niveles_personalizados
 
+    def toogle_borrar(self):
+        self.modo_borrar = not self.modo_borrar
+
+        if self.modo_borrar:
+            self.boton_borrar_seleccionado = self.boton_cancelar_borrar
+        else:
+            self.boton_borrar_seleccionado = self.boton_borrar_nivel
+
     def cargar_partida(self):
         print("cargando partida en progreso..")
         for row in range(self.game.board.grid_size):
@@ -92,6 +106,30 @@ class VentanaElegirPartida(VentanaBase):
                     self.game.board.board[row][col].click()
                 print(self.search.avance[row][col], end=" ")
         return self.iniciar_juego(self.game)
+
+    def borrar_nivel_personalizado(self, nombre_nivel):
+        try:
+            self.niveles = self.cargar_niveles(custom=True)
+            index = self.niveles[0].index(nombre_nivel)
+            file_lvl = self.niveles[1][index]
+            dificultad_actual = self.dificultades[self.indice_dificultad]
+
+            lvl_type = "custom_levels"
+            file_path = os.path.join("levels", lvl_type, dificultad_actual, file_lvl)
+
+            # Verifica si el archivo existe antes de intentar borrarlo
+            if os.path.exists(file_path):
+                os.remove(file_path)
+                print(f"Nivel {nombre_nivel} eliminado con exito.")
+                # Actualiza la lista de niveles para reflejar el cambio
+                self.niveles = self.cargar_niveles(custom=self.custom_toogle)
+            else:
+                print(f"El archivo del nivel {nombre_nivel} no existe.")
+        except ValueError:
+            print(f"El nivel {nombre_nivel} no fue encontrado en la lista.")
+        except Exception as e:
+            print(f"Error al intentar eliminar el nivel: {e}")
+
 
     def run(self):
         while True:
@@ -112,7 +150,9 @@ class VentanaElegirPartida(VentanaBase):
                             self.popup_guardado.desactivar()
                             return self.iniciar_juego(self.game)
             else:
-                for boton in [self.boton_izq, self.boton_der, self.boton_volver, self.boton_niveles_actuales]:
+                for boton in [self.boton_izq, self.boton_der, self.boton_volver, self.boton_niveles_actuales, self.boton_borrar_seleccionado]:
+                    if boton == self.boton_borrar_seleccionado and not self.custom_toogle:
+                        continue
                     boton.changeColor(menu_mouse_pos)
                     boton.update(self.pantalla)
 
@@ -125,7 +165,10 @@ class VentanaElegirPartida(VentanaBase):
                 for i, nombre in enumerate(niveles_nombres[:15]):  # Maximo 15 niveles
                     x = 150 + (i % 5) * 130  # Posición en X para cada columna
                     y = 180 + (i // 5) * 100  # Posición en Y para cada fila
-                    boton_nivel = Boton(image=None, pos=(x,y), text_input=str(nombre), font=pygame.font.SysFont(None,24), base_color=CIAN, hover_color=AZUL_CLARO)
+                    color_boton, color_hover = CIAN, AZUL_CLARO
+                    if self.modo_borrar:
+                        color_boton, color_hover = ROJO, ROJO_PRESIONADO
+                    boton_nivel = Boton(image=None, pos=(x,y), text_input=str(nombre), font=pygame.font.SysFont(None,24), base_color=color_boton, hover_color=color_hover)
                     boton_nivel.changeColor(menu_mouse_pos)
                     boton_nivel.update(self.pantalla)
                     botones_niveles.append((boton_nivel, nombre))
@@ -140,15 +183,21 @@ class VentanaElegirPartida(VentanaBase):
                         if self.boton_der.checkInput(menu_mouse_pos):
                             self.cambiar_dificultad(1)
                         if self.boton_niveles_actuales.checkInput(menu_mouse_pos):
+                            if self.modo_borrar:
+                                self.toogle_borrar()
                             self.toogle_niveles()
+                        if self.boton_borrar_nivel.checkInput(menu_mouse_pos) and self.custom_toogle:
+                            self.toogle_borrar()
                         if self.boton_volver.checkInput(menu_mouse_pos):
                             return 'menu_principal'
 
-
                         for boton, nombre in botones_niveles:
                             if boton.checkInput(menu_mouse_pos):
-                                if self.seleccionar_nivel(nombre):
-                                    return self.iniciar_juego(self.game)
+                                if self.modo_borrar:
+                                    self.borrar_nivel_personalizado(nombre)
+                                else:
+                                    if self.seleccionar_nivel(nombre):
+                                        return self.iniciar_juego(self.game)
 
             pygame.display.update()
 
@@ -168,7 +217,7 @@ class VentanaElegirPartida(VentanaBase):
         matriz_solucion = level_data['diseno']
         self.nombre_nivel_elegido = nombre_nivel
 
-        tipo_nivel = "base"
+        tipo_nivel = "base" if not self.custom_toogle else "custom"
         id = f"{level_data['nivel']}_{level_data['grid_size']}_{tipo_nivel}"
 
         self.game = Game(grid_size=grid_size, matriz_solucion=matriz_solucion, identificador=id)
