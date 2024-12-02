@@ -16,7 +16,7 @@ class VentanaMenuPrincipal(VentanaBase):
         self.menu = self.asset.cargar_fotogramas("menu")
         self.indice_fotograma_menu = 0
         self.contador_fotogramas = 0
-        self.retraso_fotogramas = 10
+        self.retraso_fotogramas = 20
 
         self.boton_elegir_partida = Boton(image=None, pos=(ANCHO_PANTALLA / 2, 350), text_input="Elegir Partida", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
         self.boton_crear_nonograma = Boton(image=None, pos=(ANCHO_PANTALLA / 2, 450), text_input="Crear Nonograma", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)

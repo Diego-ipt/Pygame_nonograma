@@ -55,7 +55,7 @@ class VentanaNonogramaGame(VentanaBase):
             boton_ayuda = Boton(image=None, pos=(600, 420), text_input=f"Ayuda ({self.game.ayudas})", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
 
             texto_vidas = f"Vidas: {self.game.vidas}"
-            mostrar_texto(texto_vidas, AMARILLO, self.pantalla, 75, 75, fuente=pygame.font.SysFont(None, 28))
+            mostrar_texto(texto_vidas, ROJO, self.pantalla, 75, 75, fuente=pygame.font.SysFont(None, 28))
 
             if self.game.vidas == 0:
                 self.running = False
