@@ -135,3 +135,16 @@ class PopUp:
 
     def desactivar(self):
         self.is_active = False
+
+
+def mostrar_fotogramas(fotogramas, indice_fotograma, contador, retraso, x, y, pantalla):
+    if len(fotogramas) > 0:
+        if contador >= retraso:
+            indice_fotograma = (indice_fotograma + 1) % len(fotogramas)
+            contador = 0
+        pantalla.blit(fotogramas[indice_fotograma], (x, y))
+        contador += 1
+        return indice_fotograma, contador
+    else:
+        print("Error: No se han cargado los fotogramas")
+        return indice_fotograma, contador

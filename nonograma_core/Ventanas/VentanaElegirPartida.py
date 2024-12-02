@@ -123,7 +123,8 @@ class VentanaElegirPartida(VentanaBase):
 
                         for boton, nombre in botones_niveles:
                             if boton.checkInput(menu_mouse_pos):
-                                self.seleccionar_nivel(nombre)
+                                if self.seleccionar_nivel(nombre):
+                                    return self.iniciar_juego(self.game)
 
             pygame.display.update()
 
@@ -149,7 +150,7 @@ class VentanaElegirPartida(VentanaBase):
         if self.search.Search(id):
             self.popup_guardado.activar()
         else:
-            return self.iniciar_juego(self.game)
+            return True
 
     def iniciar_juego(self, partida_seleccionada):
         game = partida_seleccionada  # Reinicia el juego
