@@ -104,8 +104,6 @@ class VentanaNonogramaGame(VentanaBase):
                                       offset_x + j * tamano_celda + tamano_celda // 2,
                                       offset_y - 40 - len(columna) * 15 + k * 25)
 
-            ##Por arreglar refactoring
-
 
             # Mostrar el mensaje de confirmación si está activo
             if self.mostrar_mensaje_progreso:

@@ -7,7 +7,7 @@ import pygame.font
 from nonograma_core.Ventanas.VentanaBase import VentanaBase
 from nonograma_core.Elementos_graficos.colores import *
 from nonograma_core.JuegoNonograma import ANCHO_PANTALLA, ALTO_PANTALLA
-from nonograma_core.Elementos_graficos.elementos_menus import mostrar_texto, Boton, PopUp
+from nonograma_core.Elementos_graficos.elementos_menus import *
 from nonograma_core.Logica.registros import *
 
 def get_levels_name(dificultad_elegida, custom=False):
@@ -47,9 +47,13 @@ class VentanaElegirPartida(VentanaBase):
 
         #Botones menu
         self.boton_volver = Boton(image=None, pos=(ANCHO_PANTALLA / 2, 550), text_input="Volver al menú", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
-        self.boton_izq = Boton(image=None, pos=(ANCHO_PANTALLA / 2 - 150, 100), text_input="<", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
-        self.boton_der = Boton(image=None, pos=(ANCHO_PANTALLA / 2 + 150, 100), text_input=">", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
-        self.boton_personalizado = Boton(image=None, pos=(100, 100), text_input="Personalizados", font=pygame.font.SysFont(None, 36), base_color=GRIS, hover_color=AZUL_OSCURO)
+        self.boton_izq = Boton(image=None, pos=(ANCHO_PANTALLA / 2 - 150, 100), text_input="<", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
+        self.boton_der = Boton(image=None, pos=(ANCHO_PANTALLA / 2 + 150, 100), text_input=">", font=pygame.font.SysFont(None, 36), base_color=VIOLETA_MENU, hover_color=FUCSIA)
+
+        self.boton_niveles_personalizados = Boton(image=None, pos=(100, 100), text_input="Personalizados", font=pygame.font.SysFont(None, 30), base_color=VIOLETA_MENU, hover_color=FUCSIA)
+        self.boton_niveles_base = Boton(image=None, pos=(100, 100), text_input="Niveles Base", font=pygame.font.SysFont(None, 30), base_color=VIOLETA_MENU, hover_color=FUCSIA)
+
+        self.boton_niveles_actuales = self.boton_niveles_personalizados
 
         #Popup de confirmacion
         self.popup_guardado = PopUp(pos=(400, 300), size=(300, 150), message="Se ha encontrado una partida en progreso, quieres cargar?", font=pygame.font.SysFont(None, 36), base_color=NEGRO, text_color=BLANCO)
@@ -74,7 +78,11 @@ class VentanaElegirPartida(VentanaBase):
     def toogle_niveles(self):
         self.custom_toogle = not self.custom_toogle
         self.niveles = self.cargar_niveles(custom=self.custom_toogle)
-        self.boton_personalizado.changeText("Personalizados" if self.custom_toogle else "Niveles Base")
+
+        if self.custom_toogle:
+            self.boton_niveles_actuales = self.boton_niveles_base
+        else:
+            self.boton_niveles_actuales = self.boton_niveles_personalizados
 
     def cargar_partida(self):
         print("cargando partida en progreso..")
@@ -87,7 +95,9 @@ class VentanaElegirPartida(VentanaBase):
 
     def run(self):
         while True:
-            self.pantalla.fill(GRIS)
+            actualizar_grid_fondo_menu()
+            self.pantalla.fill(BLANCO)
+            dibujar_grid_fondo_menu(self.pantalla, 50, 50, 16, NEGRO, BLANCO_MENU)
             menu_mouse_pos = pygame.mouse.get_pos()
 
             if self.popup_guardado.is_active:
@@ -102,7 +112,7 @@ class VentanaElegirPartida(VentanaBase):
                             self.popup_guardado.desactivar()
                             return self.iniciar_juego(self.game)
             else:
-                for boton in [self.boton_izq, self.boton_der, self.boton_volver, self.boton_personalizado]:
+                for boton in [self.boton_izq, self.boton_der, self.boton_volver, self.boton_niveles_actuales]:
                     boton.changeColor(menu_mouse_pos)
                     boton.update(self.pantalla)
 
@@ -113,9 +123,9 @@ class VentanaElegirPartida(VentanaBase):
                 niveles_nombres = self.niveles[0]
                 botones_niveles = []
                 for i, nombre in enumerate(niveles_nombres[:15]):  # Maximo 15 niveles
-                    x = 150 + (i % 5) * 100  # Posición en X para cada columna
+                    x = 150 + (i % 5) * 130  # Posición en X para cada columna
                     y = 180 + (i // 5) * 100  # Posición en Y para cada fila
-                    boton_nivel = Boton(image=None, pos=(x,y), text_input=str(nombre), font=pygame.font.SysFont(None,24), base_color=GRIS, hover_color=AZUL_OSCURO)
+                    boton_nivel = Boton(image=None, pos=(x,y), text_input=str(nombre), font=pygame.font.SysFont(None,24), base_color=CIAN, hover_color=AZUL_CLARO)
                     boton_nivel.changeColor(menu_mouse_pos)
                     boton_nivel.update(self.pantalla)
                     botones_niveles.append((boton_nivel, nombre))
@@ -129,7 +139,7 @@ class VentanaElegirPartida(VentanaBase):
                             self.cambiar_dificultad(-1)
                         if self.boton_der.checkInput(menu_mouse_pos):
                             self.cambiar_dificultad(1)
-                        if self.boton_personalizado.checkInput(menu_mouse_pos):
+                        if self.boton_niveles_actuales.checkInput(menu_mouse_pos):
                             self.toogle_niveles()
                         if self.boton_volver.checkInput(menu_mouse_pos):
                             return 'menu_principal'
