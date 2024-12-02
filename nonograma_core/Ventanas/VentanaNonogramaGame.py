@@ -12,6 +12,7 @@ class VentanaNonogramaGame(VentanaBase):
         self.nombre_nivel = nombre_nivel
         self.running = True
         self.registro = Guardado(nombre_nivel, game, game.identificador)
+        self.tablero_completo = None
 
         self.mostrar_mensaje_progreso = False  # Controla si se debe mostrar el mensaje
         self.tiempo_mensaje_progreso = 0       # Registra el tiempo para mostrar el mensaje
@@ -120,10 +121,10 @@ class VentanaNonogramaGame(VentanaBase):
 
             # Correr lógica del juego
             if self.game.run(self.pantalla, *game_position, eventos):
+                self.tablero_completo = self.game.board
                 self.running = False
 
             pygame.display.flip()  # Actualizar pantalla en cada iteración
 
         pygame.display.flip()
-        time.sleep(1)
-        return 'ventana_victoria'
+        return 'ventana_victoria', self.tablero_completo

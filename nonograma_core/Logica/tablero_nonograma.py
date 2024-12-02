@@ -187,6 +187,7 @@ class Game:
             self.handle_events(events, (x, y))
             main_window.blit(self.surface, (x, y))
         if self.won:
+            main_window.blit(self.surface, (x, y))
             return True
         return False
     
