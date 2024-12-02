@@ -26,7 +26,7 @@ class VentanaMenuPrincipal(VentanaBase):
         while True:
             actualizar_grid_fondo_menu()
             self.pantalla.fill(BLANCO)
-            dibujar_grid_fondo_menu(self.pantalla, 50, 50, 16, NEGRO, BLANCO_MENU)
+            dibujar_grid_fondo_menu(self.pantalla, 50, 50, 16, NEGRO, BLANCO_MENU, refresh_rate=1)
             self.indice_fotograma_menu, self.contador_fotogramas = mostrar_fotogramas(self.menu, self.indice_fotograma_menu, self.contador_fotogramas, self.retraso_fotogramas, 75, 0, self.pantalla)
 
             menu_mouse_pos = pygame.mouse.get_pos()

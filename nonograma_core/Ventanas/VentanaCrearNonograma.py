@@ -25,7 +25,7 @@ class VentanaCrearNonograma(VentanaBase):
 
     def run(self):
         while True:
-            actualizar_grid_fondo_menu(0.00005)
+            actualizar_grid_fondo_menu()
             self.pantalla.fill(BLANCO)
             dibujar_grid_fondo_menu(self.pantalla, 50, 50, 16, VERDE_PRESIONADO, BLANCO)
             pygame.display.set_caption("Nonograma Creador")

@@ -13,6 +13,8 @@ PANTALLA = pygame.display.set_mode((ANCHO_PANTALLA, ALTO_PANTALLA))
 pygame.display.set_caption("Nonograma_Game")
 icono = asset_manager.cargar_imagen("Iconojuego.jpg")
 pygame.display.set_icon(icono)
+frame_counter = 0
+
 
 def main():
 
@@ -37,6 +39,10 @@ def main():
     tablero_completo = None
 
     while True:
+        global frame_counter
+        frame_counter += 1
+
+        clock = pygame.time.Clock()
         if estado_actual == 'ventana_nonograma_game':
             ventanas[estado_actual] = VentanaNonogramaGame(PANTALLA, partida_cargada, nombre_nivel)
             partida_cargada = None
@@ -55,4 +61,5 @@ def main():
         else:
             estado_actual = ventana_siguiente
 
+        clock.tick(30)
 

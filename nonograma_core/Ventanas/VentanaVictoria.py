@@ -2,7 +2,7 @@ import sys
 
 import pygame
 from nonograma_core.Elementos_graficos.colores import *
-from nonograma_core.Elementos_graficos.elementos_menus import mostrar_fotogramas, mostrar_texto, Boton
+from nonograma_core.Elementos_graficos.elementos_menus import *
 from nonograma_core.Ventanas.VentanaBase import VentanaBase
 from nonograma_core.Elementos_graficos.AssetManager import AssetManager
 from nonograma_core.JuegoNonograma import ANCHO_PANTALLA, ALTO_PANTALLA
@@ -15,7 +15,7 @@ class VentanaVictoria(VentanaBase):
         self.trophy = self.asset.cargar_fotogramas("trofeo_win")
         self.indice_fotograma_trophy = 0
         self.contador_fotogramas = 0
-        self.retraso_fotogramas = 60
+        self.retraso_fotogramas = 5
 
         self.tablero_completo = tablero_completo
 
@@ -37,7 +37,9 @@ class VentanaVictoria(VentanaBase):
 
     def run(self):
         while True:
-            self.pantalla.fill(VIOLETA_MENU)
+            actualizar_grid_fondo_menu()
+            self.pantalla.fill(BLANCO)
+            dibujar_grid_fondo_menu(self.pantalla, 50, 50, 16, VIOLETA_MENU, BLANCO)
             mostrar_texto("¡Ganaste!", NEGRO, self.pantalla, 400, 100)
             mouse_pos = pygame.mouse.get_pos()
 

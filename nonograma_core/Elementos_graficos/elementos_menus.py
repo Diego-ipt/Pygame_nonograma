@@ -1,7 +1,6 @@
 import random
-
 import pygame
-
+from nonograma_core.JuegoNonograma import frame_counter
 # Función para mostrar texto en la pantalla
 def mostrar_texto(texto, color, pantalla, x, y, fuente=pygame.font.SysFont(None, 40)):
     superficie_texto = fuente.render(texto, True, color)
@@ -165,23 +164,34 @@ def mostrar_fotogramas(fotogramas, indice_fotograma, contador, retraso, x, y, pa
 
 
 GRID_ESTADO_FONDO_MENU = [[False for _ in range(50)] for _ in range(50)]
+CACHED_CELDAS = {}
 
 
-def dibujar_grid_fondo_menu(pantalla, filas, columnas, tamano_celda, color_activo, color_inactivo):
+def dibujar_grid_fondo_menu(pantalla, filas, columnas, tamano_celda, color_activo, color_inactivo, refresh_rate=10):
+    global frame_counter
+    if frame_counter % refresh_rate != 0:
+        return  # Salir si no es el momento de redibujar
+
     for fila in range(filas):
         for columna in range(columnas):
+            if GRID_ESTADO_FONDO_MENU[fila][columna]:
+                key = (fila, columna, True)  # True: Activo
+            else:
+                key = (fila, columna, False)  # False: Inactivo
+
+            # Verifica si la celda ya está en el caché
+            if key not in CACHED_CELDAS:
+                celda_surface = pygame.Surface((tamano_celda, tamano_celda), pygame.SRCALPHA)
+                color = (*color_activo[:3], random.randrange(50, 70)) if key[2] else (*color_inactivo[:3], 255)
+                celda_surface.fill(color)
+                CACHED_CELDAS[key] = celda_surface
+
             x = columna * tamano_celda
             y = fila * tamano_celda
-            celda_surface = pygame.Surface((tamano_celda, tamano_celda), pygame.SRCALPHA)
-            # Definir el color con transparencia (valor alfa entre 0 y 255)
-            color = (*color_activo[:3], random.randrange(50, 70)) if GRID_ESTADO_FONDO_MENU[fila][columna] else (*color_inactivo[:3], 255)
-            # Rellenar la superficie con el color y la transparencia
-            celda_surface.fill(color)
-            # Dibujar la celda en la pantalla
-            pantalla.blit(celda_surface, (x, y))
+            pantalla.blit(CACHED_CELDAS[key], (x, y))
 
 
-def actualizar_grid_fondo_menu(probabilidad=0.0001):
+def actualizar_grid_fondo_menu(probabilidad=0.00005):
     for fila in range(len(GRID_ESTADO_FONDO_MENU)):
         for columna in range(len(GRID_ESTADO_FONDO_MENU[0])):
             if random.random() < probabilidad:
