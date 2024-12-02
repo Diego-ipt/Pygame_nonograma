@@ -119,10 +119,15 @@ class Board:
             previous_state = self.board[row][col].state
             self.board[row][col].click()
 
-            es_erroneo = (self.matriz_solucion[row][col] == 0 and self.board[row][col].state == 1)
+            es_correcto = (self.matriz_solucion[row][col] == 1 and self.board[row][col].state == 1) or \
+                        (self.matriz_solucion[row][col] == 0 and self.board[row][col].state == 0)
+            if not es_correcto:
+                # Corrige el estado al correcto y retorna que hubo un error
+                if self.matriz_solucion[row][col] == 1:
+                    self.board[row][col].state = 1  # Debió ser negra
+                else:
+                    self.board[row][col].state = 2  # Debió ser bandera (X)
 
-            if es_erroneo:
-                self.board[row][col].state = 2  # Debió ser bandera
                 return (row, col, previous_state, self.board[row][col].state, False)
 
             return (row, col, previous_state, self.board[row][col].state, True)
@@ -136,6 +141,14 @@ class Board:
 
             # Verificar si la bandera es correcta
             es_correcto = self.matriz_solucion[row][col] == 0 and self.board[row][col].state == 2
+
+            if not es_correcto:
+                # Corrige el estado al correcto y retorna que hubo un error
+                if self.matriz_solucion[row][col] == 1:
+                    self.board[row][col].state = 1  # Debió ser negra
+                else:
+                    self.board[row][col].state = 0  # Debió ser blanca
+                return (row, col, previous_state, self.board[row][col].state, False)
 
             return (row, col, previous_state, self.board[row][col].state, True)
 
