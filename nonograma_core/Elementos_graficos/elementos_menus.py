@@ -1,3 +1,5 @@
+import random
+
 import pygame
 
 # Función para mostrar texto en la pantalla
@@ -47,6 +49,19 @@ class Boton:
             self.curr_color = self.hover_color
         else:
             self.curr_color = self.base_color
+
+    def changeText(self, text):
+        self.text_input = text
+        self.text = self.font.render(str(self.text_input), True, "black")
+        self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
+        # Si no hay imagen, solo actualiza el texto y el rectángulo de colisión
+        if self.image is None:
+            self.hitbox = pygame.Rect(
+                self.text_rect.left - self.rect_padding[0],
+                self.text_rect.top - self.rect_padding[1],
+                self.text_rect.width + 2 * self.rect_padding[0],
+                self.text_rect.height + 2 * self.rect_padding[1]
+            )
 
 class PopUp:
     def __init__(self, pos, size, message, font, base_color, text_color, border_radius=10, padding=20):
@@ -148,3 +163,33 @@ def mostrar_fotogramas(fotogramas, indice_fotograma, contador, retraso, x, y, pa
     else:
         print("Error: No se han cargado los fotogramas")
         return indice_fotograma, contador
+
+
+GRID_ESTADO_FONDO_MENU = [[False for _ in range(50)] for _ in range(50)]
+
+
+def dibujar_grid_fondo_menu(pantalla, filas, columnas, tamano_celda, color_activo, color_inactivo):
+    for fila in range(filas):
+        for columna in range(columnas):
+            x = columna * tamano_celda
+            y = fila * tamano_celda
+            celda_surface = pygame.Surface((tamano_celda, tamano_celda), pygame.SRCALPHA)
+            # Definir el color con transparencia (valor alfa entre 0 y 255)
+            color = (*color_activo[:3], random.randrange(50, 70)) if GRID_ESTADO_FONDO_MENU[fila][columna] else (*color_inactivo[:3], 255)
+            # Rellenar la superficie con el color y la transparencia
+            celda_surface.fill(color)
+            # Dibujar la celda en la pantalla
+            pantalla.blit(celda_surface, (x, y))
+
+
+def actualizar_grid_fondo_menu():
+    probabilidad_prenderse = 0.0001
+    probabilidad_apagarse = 0.0002
+    for fila in range(len(GRID_ESTADO_FONDO_MENU)):
+        for columna in range(len(GRID_ESTADO_FONDO_MENU[0])):
+            if GRID_ESTADO_FONDO_MENU[fila][columna]:
+                if random.random() < probabilidad_apagarse:
+                    GRID_ESTADO_FONDO_MENU[fila][columna] = False
+            else:
+                if random.random() < probabilidad_prenderse:
+                    GRID_ESTADO_FONDO_MENU[fila][columna] = True
