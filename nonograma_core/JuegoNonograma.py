@@ -1,56 +1,51 @@
 import sys
 import pygame
-
-from nonograma_core.Ventanas.VentanaMenuPrincipal import VentanaMenuPrincipal
-from nonograma_core.Ventanas.VentanaElegirPartida import VentanaElegirPartida
-from nonograma_core.Ventanas.VentanaCrearNonograma import VentanaCrearNonograma
-from nonograma_core.Ventanas.VentanaNonogramaGame import VentanaNonogramaGame
-from nonograma_core.Ventanas.VentanaVictoria import VentanaVictoria
 from nonograma_core.Elementos_graficos.AssetManager import AssetManager
-from nonograma_core.Elementos_graficos.elementos_menus import *
 
+#Constantes
+ANCHO_PANTALLA = 800
+ALTO_PANTALLA= 650
 
+#Inicializar
+asset_manager = AssetManager()
+pygame.init()
+PANTALLA = pygame.display.set_mode((ANCHO_PANTALLA, ALTO_PANTALLA))
+pygame.display.set_caption("Nonograma_Game")
+icono = asset_manager.cargar_imagen("Iconojuego.jpg")
+pygame.display.set_icon(icono)
 
-class JuegoNonograma:
-    def __init__(self):
-        pygame.init()
-        self.estado_actual = 'menu_principal'
-        self.running = True
-        self.pantalla = pygame.display.set_mode((ancho_pantalla, alto_pantalla))
-        self.asset = AssetManager()
-        self.icono = self.asset.cargar_imagen("Iconojuego.jpg")
-        pygame.display.set_caption("Nonograma_Game")
-        pygame.display.set_icon(icono)
-        # Inicializa la ventana actual
-        self.cambiar_ventana('menu_principal')
+def main():
 
-    
-    def select_lvl(self, lvl):
-        self.game = lvl
-        self.game.running = True
+    #Importadas aca para evitar conflictos de importacion circular
+    from nonograma_core.Ventanas.VentanaVictoria import VentanaVictoria
+    from nonograma_core.Ventanas.VentanaMenuPrincipal import VentanaMenuPrincipal
+    from nonograma_core.Ventanas.VentanaElegirPartida import VentanaElegirPartida
+    from nonograma_core.Ventanas.VentanaCrearNonograma import VentanaCrearNonograma
+    from nonograma_core.Ventanas.VentanaNonogramaGame import VentanaNonogramaGame
 
-    def cambiar_ventana(self, nuevo_estado, game=None, nombre_nivel=None):
-        print(f"Cambiando a ventana: {nuevo_estado}")
-        if nuevo_estado == 'menu_principal':
-            self.ventana_actual = VentanaMenuPrincipal(self.pantalla, self.cambiar_ventana)
-        elif nuevo_estado == 'elegir_partida':
-            self.ventana_actual = VentanaElegirPartida(self.pantalla, self.cambiar_ventana)
-        elif nuevo_estado == 'crear_nonograma':
-            self.ventana_actual = VentanaCrearNonograma(self.pantalla, self.cambiar_ventana)
-        elif nuevo_estado == 'ventana_nonograma_game':
-            self.ventana_actual = VentanaNonogramaGame(self.pantalla, self.cambiar_ventana, game, nombre_nivel)
-        elif nuevo_estado == 'ventana_victoria':
-            self.ventana_actual = VentanaVictoria(self.pantalla, self.cambiar_ventana)
+    ventanas = {
+        'menu_principal': VentanaMenuPrincipal(PANTALLA),
+        'elegir_partida': VentanaElegirPartida(PANTALLA),
+        'ventana_nonograma_game': None, #Sera instanciada dinamicamente para cargar aprtidas
+        'crear_nonograma': VentanaCrearNonograma(PANTALLA),
+        'ventana_victoria': VentanaVictoria(PANTALLA)
+    }
 
-    def ejecutar(self):
-        while self.running:
-            for evento in pygame.event.get():
-                if evento.type == pygame.QUIT:
-                    self.running = False
-            # Llamar a la función de dibujo de la ventana actual
-            self.ventana_actual.dibujar()
-            pygame.display.update()
-    
-        pygame.quit()
-        sys.exit()
+    estado_actual = 'menu_principal'
+    partida_cargada = None
+    nombre_nivel = None
+
+    while True:
+        if estado_actual == 'ventana_nonograma_game':
+            ventanas[estado_actual] = VentanaNonogramaGame(PANTALLA, partida_cargada, nombre_nivel)
+            partida_cargada = None
+            nombre_nivel = None
+
+        ventana_siguiente = ventanas[estado_actual].run()
+
+        if isinstance(ventana_siguiente, tuple): #Caso especial donde se cargo un juego al elegir aprtida
+            estado_actual, partida_cargada, nombre_nivel = ventana_siguiente
+        else:
+            estado_actual = ventana_siguiente
+
 
