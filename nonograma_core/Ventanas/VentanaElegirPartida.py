@@ -102,7 +102,7 @@ class VentanaElegirPartida(VentanaBase):
         print("cargando partida en progreso..")
         for row in range(self.game.board.grid_size):
             for col in range(self.game.board.grid_size):
-                if self.search.avance[row][col] != 0:
+                if self.search.avance[row][col] == 1:
                     self.game.board.board[row][col].click()
                 print(self.search.avance[row][col], end=" ")
         return self.iniciar_juego(self.game)
