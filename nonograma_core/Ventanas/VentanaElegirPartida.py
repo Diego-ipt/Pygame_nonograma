@@ -168,7 +168,7 @@ class VentanaElegirPartida(VentanaBase):
         matriz_solucion = level_data['diseno']
         self.nombre_nivel_elegido = nombre_nivel
 
-        tipo_nivel = "base"
+        tipo_nivel = "base" if not self.custom_toogle else "custom"
         id = f"{level_data['nivel']}_{level_data['grid_size']}_{tipo_nivel}"
 
         self.game = Game(grid_size=grid_size, matriz_solucion=matriz_solucion, identificador=id)
