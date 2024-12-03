@@ -104,6 +104,8 @@ class VentanaElegirPartida(VentanaBase):
             for col in range(self.game.board.grid_size):
                 if self.search.avance[row][col] == 1:
                     self.game.board.board[row][col].click()
+                elif self.search.avance[row][col] == 2:
+                    self.game.board.board[row][col].toggle_flag()
                 print(self.search.avance[row][col], end=" ")
         return self.iniciar_juego(self.game)
 

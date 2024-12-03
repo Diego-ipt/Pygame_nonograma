@@ -83,44 +83,21 @@ class Board:
         # 1: Clickeada
     def get_matriz_actual(self):
         return [[1 if cell.state == 1 else 0 for cell in row] for row in self.board]
-
-
-    # def handle_click(self, pos):
-    #     row = int(pos[1] // self.cell_size)
-    #     col = int(pos[0] // self.cell_size)
-    #     if 0 <= row < self.grid_size and 0 <= col < self.grid_size:
-    #         previous_state = self.board[row][col].state
-    #         self.board[row][col].click()
-    #         # matriz = self.get_matrix()
-
-    #         # for fila in matriz:
-    #         #     print(fila)
-    #         # print("\n")
-    #         return (row, col, previous_state, self.board[row][col].state)
-
-    # def handle_flag(self, pos):
-    #     row = int(pos[1] // self.cell_size)
-    #     col = int(pos[0] // self.cell_size)
-    #     if 0 <= row < self.grid_size and 0 <= col < self.grid_size:
-    #         previous_state = self.board[row][col].state
-    #         self.board[row][col].toggle_flag()
-
-    #         # matriz = self.get_matrix()
-
-    #         # for fila in matriz:
-    #         #     print(fila)
-    #         # print("\n")
-    #         return (row, col, previous_state, self.board[row][col].state)
+    
     
     def handle_click(self, pos):
         row = int(pos[1] // self.cell_size)
         col = int(pos[0] // self.cell_size)
         if 0 <= row < self.grid_size and 0 <= col < self.grid_size:
             previous_state = self.board[row][col].state
-            self.board[row][col].click()
 
-            es_correcto = (self.matriz_solucion[row][col] == 1 and self.board[row][col].state == 1) or \
-                        (self.matriz_solucion[row][col] == 0 and self.board[row][col].state == 0)
+            if previous_state == 2:
+                es_correcto = True
+            else:
+                self.board[row][col].click()
+
+                es_correcto = (self.matriz_solucion[row][col] == 1 and self.board[row][col].state == 1) or \
+                            (self.matriz_solucion[row][col] == 0 and self.board[row][col].state == 0)
             if not es_correcto:
                 # Corrige el estado al correcto y retorna que hubo un error
                 if self.matriz_solucion[row][col] == 1:
@@ -137,10 +114,14 @@ class Board:
         col = int(pos[0] // self.cell_size)
         if 0 <= row < self.grid_size and 0 <= col < self.grid_size:
             previous_state = self.board[row][col].state
-            self.board[row][col].toggle_flag()
 
-            # Verificar si la bandera es correcta
-            es_correcto = self.matriz_solucion[row][col] == 0 and self.board[row][col].state == 2
+            if previous_state == 1:
+                es_correcto = True
+            else:
+                self.board[row][col].toggle_flag()
+
+                # Verificar si la bandera es correcta
+                es_correcto = self.matriz_solucion[row][col] == 0 and self.board[row][col].state == 2
 
             if not es_correcto:
                 # Corrige el estado al correcto y retorna que hubo un error
@@ -222,7 +203,8 @@ class Game:
                         change = self.board.handle_click(pos)
                         if change:
                             row, col, prev_state, new_state, es_correcto = change
-                            self.stack.push((row, col, prev_state, new_state))
+                            if new_state != prev_state:
+                                self.stack.push((row, col, prev_state, new_state))
                             if not es_correcto:  # Si fue incorrecto
                                 self.vidas -= 1
                             
@@ -232,7 +214,8 @@ class Game:
                         change = self.board.handle_flag(pos)
                         if change:
                             row, col, prev_state, new_state, es_correcto = change
-                            self.stack.push((row, col, prev_state, new_state))
+                            if new_state != prev_state:
+                                self.stack.push((row, col, prev_state, new_state))
                             if not es_correcto:  # Si fue incorrecto
                                 self.vidas -= 1
                             self.won = self.board.get_matriz_actual() == self.board.matriz_solucion
