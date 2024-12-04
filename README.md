@@ -45,9 +45,10 @@ python .\inicio.py
 
 ## Para ejecutar las pruebas:
 ### Instalar pytest:
-Em la terminal o bash:
+En la terminal o bash:
 pip install pytest
 
 ### Ejecutar pruebas:
 En la terminal o bash:
 pytest nombre_test.py
+python -m unittest nombre_test.py
