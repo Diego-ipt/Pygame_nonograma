@@ -2,7 +2,7 @@
 Integrantes:  Javier Alberto Cadagán Parra, Diego Ignacio Pérez Torres, Antonia Renata Montero López
 
 # NONOGRAMA
-Este es un proyecto en que se buscó desarrollar el juego Nonograma. Nonograma es un juego de ingenio que consiste en colorear casillas en una cuadrícula para revelar una imagen oculta, siguiendo indicaciones numéricas ubicadas al lado del tablero. Estas indicaciones dan a conocer la cantidad de celdas consecutivas que deben colorearse en cada fila y columna. Se busca que el jugador interprete correctamente estas indicaciones para descubrir la imagen escondida y lograr la victoria.
+Nonograma es un juego de ingenio que consiste en colorear casillas en una cuadrícula para revelar una imagen oculta, siguiendo indicaciones numéricas ubicadas al lado del tablero. Estas indicaciones dan a conocer la cantidad de celdas consecutivas que deben colorearse en cada fila y columna. Se busca que el jugador interprete correctamente estas indicaciones para descubrir la imagen escondida y lograr la victoria.
 
 Dentro de las funcionalidades que encontrarás serán: selección de niveles por dificultad, creación y administración de niveles personalizados, guardado de progreso en un nivel, sistema de pistas inteligente, deshacer/rehacer movimientos, entre otros.
 
@@ -40,9 +40,14 @@ En la terminal o bash:
 pip install -r requirements.txt
 
 ### Ejecuta el proyecto con:
-bash
+En la terminal o bash:
 python .\inicio.py
 
 ## Para ejecutar las pruebas:
+### Instalar pytest:
+Em la terminal o bash:
+pip install pytest
+
+### Ejecutar pruebas:
 En la terminal o bash:
-pytest
+pytest nombre_test.py
