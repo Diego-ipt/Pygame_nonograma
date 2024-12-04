@@ -26,9 +26,11 @@ git clone https://github.com/Diego-ipt/Pygame_nonograma.git
 cd Pygame_nonograma
 
 ### Crear y activar el entorno virtual (windows):
-En la terminal o bash:
+Crear en la terminal o bash:
 python -m venv .venv
-.\.venv\Scripts\activate , o en su defecto, .\.venv\bin\activate
+
+Activar en la terminal o bash:
+\.venv\Scripts\activate , o en su defecto, .\.venv\bin\activate
 
 ### Crear y activar el entorno virtual (linux):
 En la terminal o bash:
@@ -42,11 +44,6 @@ pip install -r requirements.txt
 ### Ejecuta el proyecto con:
 En la terminal o bash:
 python .\inicio.py
-
-## Para ejecutar las pruebas:
-### Instalar pytest:
-En la terminal o bash:
-pip install pytest
 
 ### Ejecutar pruebas:
 En la terminal o bash:
